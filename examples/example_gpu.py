@@ -17,7 +17,7 @@ BENCHMARKS = [gpucpubench.GpuCpuBench(), gpumembench.GpuMemBench()]
 
 LEVERAGES = [gpupow.GpuPower(steps=2), gpuclock.GpuClock(steps=2)]
 
-hw_pct = mojitos.get_names() ## All available sensors
+hw_pct = {'instructions', 'cache_misses'}
 MONITORS = [mojitos.Mojitos(sensor_set = hw_pct),
             power.Power(), powergpu.Power()]
 
