@@ -48,7 +48,7 @@ class GpuClock:
             self.executor.local('nvidia-smi -i 0 -ac  %s,%s' % (self.clock_mem_max, freq), root=True)
             #self.executor.local('nvidia-smi -i 0 -lgc  %s,%s' % (self.clock_sm_min, freq), root=True)
 
-    def stop(self):
+    def stop(self, output_file=None):
         'Reverts to the maximum frequency'
         self.executor.local('nvidia-smi -i 0 -rac', root=True)
         #self.executor.local('nvidia-smi -i 0 -rgc', root=True)

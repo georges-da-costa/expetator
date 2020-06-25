@@ -32,7 +32,7 @@ class GpuPower:
         if power in self.available_power_limit:
             self.executor.local('nvidia-smi -i 0 -pl  %s' % (power), root=True)
 
-    def stop(self):
+    def stop(self, output_file=None):
         'Reverts to the maximum power limit'
         self.executor.local('nvidia-smi -i 0 -pl %s' % (self.power_max), root=True)
             
