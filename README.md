@@ -1,7 +1,7 @@
 # expetator
 
-For now to run first
+git clone https://github.com/georges-da-costa/expetator.git
+PYTHONPATH=. python3 expetator/examples/example_gpu.py
 
-cp ./expetator/examples/example_gpu.py .
 
-python3 example_gpu.py
+
