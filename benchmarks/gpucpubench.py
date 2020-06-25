@@ -10,7 +10,7 @@ class GpuCpuBench:
     def build(self, executor, deterministic):
         basedir = os.path.dirname(os.path.abspath(__file__))
         'Builds the gpu benchmark'
-        executor.local('nvcc -arch=sm_70 %s/m.cu -o /tmp/bin/gpu' % basedir)
+        executor.local('/usr/local/cuda-10.1/bin/nvcc -arch=sm_70 %s/m.cu -o /tmp/bin/gpu' % basedir)
         if deterministic:
             params = {'gpucpu':[(r/100) for r in range(75, 126, 50)]}
         else:

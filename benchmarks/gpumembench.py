@@ -11,7 +11,7 @@ class GpuMemBench:
         'Builds the gpu benchmark'
         basedir = os.path.dirname(os.path.abspath(__file__))
         
-        executor.local('nvcc -arch=sm_70 %s/m.cu -o /tmp/bin/gpu' % basedir)
+        executor.local('/usr/local/cuda-10.1/bin/nvcc -arch=sm_70 %s/m.cu -o /tmp/bin/gpu' % basedir)
         if deterministic:
             params = {'gpumem':[(r/100) for r in range(10, 100, 10)]}
         else:
