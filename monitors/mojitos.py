@@ -1,0 +1,105 @@
+import os
+import stat
+
+def read_int(filename):
+    """Read integer from file filename"""
+    with open(filename) as file_id:
+        return int(file_id.readline())
+
+
+network_names = {'rxb', 'rxp', 'txb', 'txp'}
+infiniband_names = {'irxb', 'irxp', 'itxb', 'itxp'}
+rapl_names = {'dram0', 'dram1', 'package-00', 'package-11'}
+load_names = {'user', 'nice', 'system', 'idle', 'iowait', 'irq',
+              'softirq', 'steal', 'guest', 'guest_nice'}
+perf_names = {'cpu_cycles', 'instructions', 'cache_references', 'cache_misses',
+              'branch_instructions', 'branch_misses', 'bus_cycles', 'ref_cpu_cycles',
+              'cache_l1d', 'cache_ll', 'cache_dtlb', 'cache_itlb', 'cache_bpu',
+              'cache_node', 'cache_op_read', 'cache_op_prefetch', 'cache_result_access',
+              'cpu_clock', 'task_clock', 'page_faults', 'context_switches',
+              'cpu_migrations', 'page_faults_min', 'page_faults_maj',
+              'alignment_faults', 'emulation_faults', 'dummy', 'bpf_output'}
+
+def get_names():
+    return network_names | rapl_names | load_names | perf_names | infiniband_names
+
+def get_structured_names():
+    return {'network':network_names,
+            'rapl':rapl_names,
+            'load':load_names,
+            'perfct':perf_names,
+            'infiniband': infiniband_names}
+
+class Mojitos:
+    'Monitoring using MojitO/S'
+    def __init__(self, sensor_set={'dram0'}, frequency=10):
+
+        self.perf = len(sensor_set & perf_names) != 0
+        self.network = len(sensor_set & network_names) != 0
+        self.rapl = len(sensor_set & rapl_names) != 0
+        self.load = len(sensor_set & load_names) != 0    
+        self.infiniband = len(sensor_set & infiniband_names) != 0    
+        
+        self.net_dev = None
+        self.executor = None
+
+        self.names = sensor_set
+        self.frequency = frequency
+        self.cmdline = ''
+        
+    def build(self, executor):
+        """Installs the mojito/s monitoring framework and add the permissions"""
+
+        if True or self.rapl:
+            # should work but do not work currently as to compile mojitos it
+            # is always necessary to have rapl. Todo: update mojitos
+            if False in [os.path.exists(filename) for filename in
+                         ['/usr/share/doc/powercap-utils',
+                          '/usr/share/doc/libpowercap-dev',
+                          '/usr/share/doc/libpowercap0']]:
+                executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
+        if not os.path.exists('/tmp/mojitos'):
+            executor.local('cd /tmp; git clone https://git.renater.fr/anonscm/git/mojitos/mojitos.git')
+        else:
+            executor.local('cd /tmp/mojitos; git pull')
+        executor.local('cd /tmp/mojitos; make')
+        if True or self.rapl:
+            if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
+                executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
+            mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_max_power_uw')
+            if not mode.st_mode & stat.S_IWUSR:
+                executor.hosts("chmod a+w /sys/class/powercap/intel-rapl/*/*", root=True)
+                executor.hosts("chmod a+w /sys/class/powercap/intel-rapl/*/*/*", root=True)
+
+        if self.network:
+            self.net_dev = executor.get_network_if()
+        self.executor = executor
+
+        self.cmdline = '/tmp/mojitos/mojitos -t 0 -f %s' % self.frequency
+        if self.perf:
+            self.cmdline += ' -p ' + ','.join(self.names & perf_names)
+        if self.network:
+            self.cmdline += ' -d %s' % self.net_dev
+        if self.infiniband:
+            self.cmdline += ' -i X'
+        if self.rapl:
+            self.cmdline += ' -r'
+        if self.load:
+            self.cmdline += ' -u'
+        self.cmdline += ' -o /dev/shm/monitoring &'
+
+
+    def start(self):
+        'Starts the monitoring right before the benchmark'
+        self.executor.local(self.cmdline)
+
+    def stop(self):
+        'Stops the monitoring right before the benchmark'
+        self.executor.local('killall mojitos')
+
+    def save(self, experiment, benchname, beg_time):
+        'Save the results when time is no more critical'
+        filename_moj = experiment.output_file+'_mojitos'
+        os.makedirs(filename_moj, exist_ok=True)
+        self.executor.local('mv /dev/shm/monitoring %s/%s_%s_%s' %
+                            (filename_moj, self.executor.hostnames[0], benchname, beg_time))
