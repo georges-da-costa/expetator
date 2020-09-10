@@ -48,6 +48,9 @@ set_pct () {
 #    echo $PCT | ${SUDO} tee /sys/devices/system/cpu/intel_pstate/max_perf_pct
 }
 
+set_noboost () {
+    echo $NOBOOST | tee /sys/devices/system/cpu/intel_pstate/no_turbo
+}
 
 if [ $1 == 'init' ]
 then
@@ -66,4 +69,9 @@ if [ $1 == 'pct' ]
 then
    PCT=$2
    set_pct
+fi
+if [ $1 == 'noboost' ]
+then
+    NOBOOST=$2
+    set_noboost
 fi
