@@ -4,8 +4,8 @@ import os
 ###### ! to move to executor
 import execo
 
-from leverages import dvfs
-from monitors import mojitos
+from expetator.leverages import dvfs
+from expetator.monitors import mojitos
 
 def save_scheduler(code_elements, skel_path, output_path, debug=False):
     name, arguments, nb_arguments, pcts, code = code_elements
