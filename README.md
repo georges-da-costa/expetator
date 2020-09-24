@@ -1,7 +1,6 @@
 # expetator
 
-git clone https://github.com/georges-da-costa/expetator.git
-PYTHONPATH=. python3 expetator/examples/example_gpu.py
+A tool for running HPC applications using several type of leverages (DVFS) and low-level monitoring (hardware performance counters, RAPL)
 
 
 
