@@ -71,20 +71,24 @@ def show_heatmap(knowledge, x='fmax',y='fullname', metric='duration'):
     return optimals
 
 def get_monitoring_power(hostname, startTime, basename, fullname, hostlist=None, archive_fid=None):
-
-    fullpath= '%s_power/%s_%s_%s' % (basename, hostname, fullname, startTime)
-    if archive_fid is None:
-        with open(fullpath) as file_id:
-            data = json.loads(file_id.read())
-    else:
-        with archive_fid.open(fullpath) as file_id:
-            data = json.loads(file_id.read())
-
-    if hostlist is None:
-        hostlist = hostname.split('.')[0]
-    _data = [ (t,p) for (h, t, p) in data if h == hostlist]
-
-    return _data[0]
+    try:
+        fullpath= '%s_power/%s_%s_%s' % (basename, hostname, fullname, startTime)
+        if archive_fid is None:
+            with open(fullpath) as file_id:
+                data = json.loads(file_id.read())
+        else:
+            with archive_fid.open(fullpath) as file_id:
+                data = json.loads(file_id.read())
+    
+        if hostlist is None:
+            hostlist = hostname.split('.')[0]
+        _data = [ (t,p) for (h, t, p) in data if h == hostlist]
+    except:# no file
+        return -1
+    if len(_data[0][1]) <= 4:
+        print("error", fullpath)
+        return -1
+    return mean(_data[0][1][4:])
 
 def get_monitoring_mojitos(hostname, startTime, basename, fullname, hostlist=None, archive_fid=None):
     fullpath= '%s_mojitos/%s_%s_%s' % (basename, hostname, fullname, startTime)
@@ -116,10 +120,11 @@ def read_experiment(filenames, only_complete=False, keep_only=None):
             archive_fid[basename] = tmp_fid
 
             k = pd.read_csv(tmp_fid.open(filenames[0]), sep=' ')
-        
+            
         else:
             archive_fid[basename] = None
             k = pd.read_csv(basename, sep=' ')
+        
         k['basename'] = basename
 
         if not keep_only is None:
@@ -128,8 +133,11 @@ def read_experiment(filenames, only_complete=False, keep_only=None):
         if only_complete:
             nb_lev = len(k.fmax.unique())
             nb_expe = len(k) // nb_lev
+            if nb_lev == len(k):
+                print('uncompleted file:', basename)
+                continue
             k = k[:nb_expe*nb_lev]
-
+            
         tmp_knowledge.append(k)
     knowledge = pd.concat(tmp_knowledge, ignore_index=True)
     
@@ -140,9 +148,9 @@ def read_experiment(filenames, only_complete=False, keep_only=None):
         knowledge['expe'] = [j for i in ids_expe for j in i]
     
     try:
-        knowledge['power'] =  knowledge.apply(lambda row: mean(
-            get_monitoring_power(row.hostname, row.startTime, row.basename, row.fullname, archive_fid=archive_fid[row.basename])[1][4:]
-        ), axis=1)
+        knowledge['power'] =  knowledge.apply(lambda row: 
+            get_monitoring_power(row.hostname, row.startTime, row.basename, row.fullname, archive_fid=archive_fid[row.basename])
+        , axis=1)
 
         knowledge['energy']=knowledge.apply(lambda row: row.duration*row.power, axis=1)
         
