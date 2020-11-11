@@ -84,10 +84,11 @@ def get_monitoring_power(hostname, startTime, basename, fullname, hostlist=None,
             hostlist = hostname.split('.')[0]
         _data = [ (t,p) for (h, t, p) in data if h == hostlist]
     except:# no file
-        return -1
+        print("no file:", fullpath)
+        return float("inf")
     if len(_data[0][1]) <= 4:
-        print("error", fullpath)
-        return -1
+        print("error _data[0][1]) <= 4", fullpath)
+        return float("inf")
     return mean(_data[0][1][4:])
 
 def get_monitoring_mojitos(hostname, startTime, basename, fullname, hostlist=None, archive_fid=None):
