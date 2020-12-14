@@ -1,20 +1,13 @@
 import os
 import random
 
-def generate_four(maximum):
-    'Generates four balanced values which sum is maximum'
-    middle = random.randint(0, maximum)
-    left = random.randint(0, middle)
-    right = random.randint(middle, maximum)
-    return left, middle-left, right-middle, maximum-right
-
 class MpiBench:
     'Complex mpi benchmark'
     def __init__(self, params=None):
         self.names = {'mpi'}
         self.params = {'mpi': params}
 
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Builds the complex mpi benchmark'
 
         basedir = os.path.dirname(os.path.abspath(__file__))
@@ -28,12 +21,8 @@ class MpiBench:
             executor.local('mpicc -DSIZE=8192 %s/mpi_generic.c -o /tmp/bin/mpi_generic' % basedir)
 
         if self.params['mpi'] is None:
-            if deterministic:
-                self.params = {'mpi':[(16, 0, 0, 0), (0, 16, 0, 0),
-                                 (0, 0, 16, 0), (0, 0, 0, 16), (4, 4, 4, 4)]}
-            else:
-                self.params = {'mpi':[lambda: generate_four(16)]}
-
+            self.params = {'mpi':[(16, 0, 0, 0), (0, 16, 0, 0),
+                                  (0, 0, 16, 0), (0, 0, 0, 16), (4, 4, 4, 4)]}
                 
         return self.params
 

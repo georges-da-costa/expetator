@@ -7,15 +7,14 @@ class GpuMemBench:
     def __init__(self):
         self.names = {'gpumem'}
         
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Builds the gpu benchmark'
         basedir = os.path.dirname(os.path.abspath(__file__))
         
         executor.local('/usr/local/cuda-10.1/bin/nvcc -arch=sm_70 %s/m.cu -o /tmp/bin/gpu' % basedir)
-        if deterministic:
-            params = {'gpumem':[(r/100) for r in range(10, 100, 10)]}
-        else:
-            params = {'gpumem':[lambda: (random.randint(10, 100)/100)]}
+
+        params = {'gpumem':[(r/100) for r in range(10, 100, 10)]}
+
         return params
 
     def run(self, bench, params, executor):

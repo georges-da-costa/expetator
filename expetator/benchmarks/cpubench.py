@@ -9,7 +9,7 @@ class CpuBench:
         self.time_ref = time_ref
         self.nb_processes = 1
         
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Builds the cpu benchmark'
 
         self.nb_processes = executor.nbcores // executor.nbhosts
@@ -21,16 +21,15 @@ class CpuBench:
         executor.local('gcc %s/cpu.c -o /tmp/bin/cpu' % basedir)
         ref = int(executor.local('/tmp/bin/cpu --test'))
         time_ref = 30
-        if deterministic:
-            if self.param_func is None:
-                params = {'cpu':[(ref//3, self.time_ref),
-                                 ((2*ref)//3, self.time_ref),
-                                 (ref//2, self.time_ref),
-                                 (ref*2, self.time_ref)]}
-            else:
-                params = {'cpu': [ (res, self.time_ref) for res in self.param_func(ref)]}
+
+        if self.param_func is None:
+            params = {'cpu':[(ref//3, self.time_ref),
+                             ((2*ref)//3, self.time_ref),
+                             (ref//2, self.time_ref),
+                             (ref*2, self.time_ref)]}
         else:
-            params = {'cpu':[lambda: ((10*ref)//random.randint(1, 100), self.time_ref)]}
+            params = {'cpu': [ (res, self.time_ref) for res in self.param_func(ref)]}
+
         return params
 
     def run(self, bench, params, executor):

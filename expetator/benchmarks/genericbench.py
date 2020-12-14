@@ -10,7 +10,7 @@ class GenericBench:
         self.step = step_size
         self.remote = "localhost"
 
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Builds the wide coverage benchmark'
         if len(executor.hostnames) > 1:
             self.remote = executor.hostnames[-1]

@@ -9,7 +9,7 @@ class PercentageBench:
         self.duration = duration
         self.values = values
 
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Builds cloud-like benchmark'
         self.nb_processes = executor.nbcores // executor.nbhosts
         if 'OAR_NODE_FILE' in os.environ:

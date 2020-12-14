@@ -13,7 +13,7 @@ class GromacsBench:
         self.datasets = params
         self.default_steps = default_steps
         
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'Install the gromacs benchmark'
 
         if spawn.find_executable('mdrun_mpi') is None:

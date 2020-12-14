@@ -6,7 +6,7 @@ class SleepBench:
         self.names = {'sleep'}
         self.time = default_time
 
-    def build(self, executor, deterministic):
+    def build(self, executor):
         'returns the parameters'
         return {'sleep':[self.time]}
 

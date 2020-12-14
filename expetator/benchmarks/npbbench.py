@@ -23,7 +23,7 @@ class NpbBench:
         self.names = names
         self.params = options
 
-    def build(self, executor, deterministic):
+    def build(self, executor):
 
         basedir = os.path.dirname(os.path.abspath(__file__))
         

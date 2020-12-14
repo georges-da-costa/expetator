@@ -87,7 +87,7 @@ class Executor:
 class Experiment:
     'Store and runs a complete experiments'
     params = {}
-    def __init__(self, name, executor, benchmarks, monitors=[], leverages=[], deterministic=False):
+    def __init__(self, name, executor, benchmarks, monitors=[], leverages=[]):
         self.executor = executor
         self.output_file = '%s_%s_%s' %(name, self.executor.hostnames[0], int(time.time()))
 
@@ -100,13 +100,13 @@ class Experiment:
             leverage.build(self.executor)
 
         self.bench_suites = benchmarks
-        self.build_benchs(deterministic)
+        self.build_benchs()
 
-    def build_benchs(self, deterministic=False):
+    def build_benchs(self):
         'Builds all the benchmarks'
         os.makedirs('/tmp/bin/', exist_ok=True)
         for bench_suite in self.bench_suites:
-            tmp_params = bench_suite.build(self.executor, deterministic)
+            tmp_params = bench_suite.build(self.executor)
             self.params.update(tmp_params)
         self.executor.sync('/tmp/bin')
 
@@ -197,26 +197,14 @@ def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, tim
     executor = Executor()
 
     expe = Experiment(name, executor, benchmarks,
-                      monitors=monitors, leverages=leverages, deterministic=sweep)
+                      monitors=monitors, leverages=leverages)
 
-    if sweep:
-        for _ in range(times):
-            for bench in expe.get_all_benchnames():
-                for param in expe.get_params(bench):
-                    if callable(param):
-                        param = param()
-                    for actions in expe.get_hw_actions():
-                        expe.start_actions(actions)
-                        pattern = expe.monitor_bench(bench, param)
-                        expe.stop_actions(actions, pattern)
-                
-    else:
-        while True:
-            bench = random.choice(list(expe.get_all_benchnames()))
-            param = random.choice(expe.get_params(bench))
-            if callable(param):
-                param = param()
-            for actions in expe.get_hw_actions():
-                expe.start_actions(actions)
-                pattern=expe.monitor_bench(bench, param)
-                expe.stop_actions(actions, pattern)
+    for _ in range(times):
+        for bench in expe.get_all_benchnames():
+            for param in expe.get_params(bench):
+                if callable(param):
+                    param = param()
+                for actions in expe.get_hw_actions():
+                    expe.start_actions(actions)
+                    pattern = expe.monitor_bench(bench, param)
+                    expe.stop_actions(actions, pattern)
