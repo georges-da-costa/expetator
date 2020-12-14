@@ -150,6 +150,14 @@ class Experiment:
             if bench in bench_suite.names:
                 return bench_suite.run(bench, param, self.executor)
 
+    def do_watermark(self):
+        print('Watermark 30s')
+        mark = 'cat /dev/zero > /dev/null & pid=$!; sleep 5; kill -9 ${pid}'
+        for _ in range(3):
+            time.sleep(3.3)
+            self.executor.cores(mark)
+        time.sleep(5)
+            
     def print_header(self):
         'Prints the initial header in the experimental output file'
         if os.path.exists(self.output_file):
@@ -161,7 +169,7 @@ class Experiment:
         with open(self.output_file, 'w') as output_file:
             output_file.write(res)
 
-    def monitor_bench(self, bench, param):
+    def monitor_bench(self, bench, param, watermark=False):
         'Runs and monitor the benchmark and then save the results'
         output_time = ''
         self.print_header()
@@ -173,7 +181,11 @@ class Experiment:
 
             beg_time = int(time.time())
             self.start_monitors()
+            if watermark:
+                self.do_watermark()
             output_time, benchname = self.run_bench(bench, param)
+            if watermark:
+                self.do_watermark()
             self.stop_monitors()
             end_time = int(time.time())
 
@@ -192,7 +204,7 @@ class Experiment:
                                    self.executor.hostnames[0],
                                    benchname, beg_time)
 
-def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, times=1):
+def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, times=1, watermark=False):
     """Typical experiment"""
     executor = Executor()
 
@@ -206,5 +218,5 @@ def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, tim
                     param = param()
                 for actions in expe.get_hw_actions():
                     expe.start_actions(actions)
-                    pattern = expe.monitor_bench(bench, param)
+                    pattern = expe.monitor_bench(bench, param, watermark=watermark)
                     expe.stop_actions(actions, pattern)
