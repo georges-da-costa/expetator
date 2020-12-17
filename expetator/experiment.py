@@ -154,12 +154,12 @@ class Experiment:
         'Prints the initial header in the experimental output file'
         if os.path.exists(self.output_file):
             return
-        res = 'hostname fullname nproc duration startTime endTime '
+        res = ['hostname','fullname','nproc','duration', 'startTime', 'endTime']
         for leverage in self.hw_modes:
-            res += ' '.join(leverage.get_labels())
-        res += ' hostlist\n'
+            res.extend(leverage.get_labels())
+        res.append('hostlist')
         with open(self.output_file, 'w') as output_file:
-            output_file.write(res)
+            output_file.write(' '.join(res)+'\n')
 
     def monitor_bench(self, bench, param):
         'Runs and monitor the benchmark and then save the results'
