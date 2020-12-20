@@ -62,7 +62,7 @@ class Mojitos:
         else:
             executor.local('cd /tmp/mojitos; git pull')
         executor.local('cd /tmp/mojitos; make')
-        executor.local('cp /tmp/mojitos/mojitos /tmp/bin')
+        executor.local('cp /tmp/mojitos/mojitos /tmp/bin/')
         if True or self.rapl:
             if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
                 executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)

@@ -91,6 +91,8 @@ class Experiment:
         self.executor = executor
         self.output_file = '%s_%s_%s' %(name, self.executor.hostnames[0], int(time.time()))
 
+        os.makedirs('/tmp/bin/', exist_ok=True)
+        
         self.monitors = monitors
         for monitor in monitors:
             monitor.build(self.executor)
@@ -102,13 +104,13 @@ class Experiment:
         self.bench_suites = benchmarks
         self.build_benchs()
 
+        self.executor.sync('/tmp/bin')
+        
     def build_benchs(self):
         'Builds all the benchmarks'
-        os.makedirs('/tmp/bin/', exist_ok=True)
         for bench_suite in self.bench_suites:
             tmp_params = bench_suite.build(self.executor)
             self.params.update(tmp_params)
-        self.executor.sync('/tmp/bin')
 
     def start_monitors(self):
         'Starts all the monitors'
