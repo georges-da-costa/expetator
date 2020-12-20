@@ -3,6 +3,7 @@ import time
 class SleepBench:
     'Sleep benchmark'
     def __init__(self, default_time=30):
+        'The only mandatory filed is names'
         self.names = {'sleep'}
         self.time = default_time
 
