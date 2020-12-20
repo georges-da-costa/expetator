@@ -62,6 +62,7 @@ class Mojitos:
         else:
             executor.local('cd /tmp/mojitos; git pull')
         executor.local('cd /tmp/mojitos; make')
+        executor.local('cp /tmp/mojitos/mojitos /tmp/bin')
         if True or self.rapl:
             if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
                 executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
@@ -72,7 +73,7 @@ class Mojitos:
 
         self.executor = executor
 
-        self.cmdline = '/tmp/mojitos/mojitos -t 0 -f %s' % self.frequency
+        self.cmdline = '/tmp/bin/mojitos -t 0 -f %s' % self.frequency
         if self.perf:
             self.cmdline += ' -p ' + ','.join(self.names & perf_names)
         if self.network:
@@ -88,15 +89,20 @@ class Mojitos:
 
     def start(self):
         'Starts the monitoring right before the benchmark'
-        self.executor.local(self.cmdline)
+        self.executor.hosts(self.cmdline)
 
     def stop(self):
         'Stops the monitoring right before the benchmark'
-        self.executor.local('killall mojitos')
+        self.executor.hosts('killall mojitos')
 
     def save(self, experiment, benchname, beg_time):
         'Save the results when time is no more critical'
         filename_moj = experiment.output_file+'_mojitos'
         os.makedirs(filename_moj, exist_ok=True)
-        self.executor.local('mv /dev/shm/monitoring %s/%s_%s_%s' %
-                            (filename_moj, self.executor.hostnames[0], benchname, beg_time))
+        if len(self.executor.hostnames) > 1:
+            for hostname in self.executor.hostnames:
+                self.executor.local('oarcp %s:/dev/shm/monitoring %s/%s_%s_%s' %
+                                    (hostname, filename_moj, hostname, benchname, beg_time))
+        else:
+            self.executor.local('cp /dev/shm/monitoring %s/%s_%s_%s' %
+                                    (filename_moj, hostname, benchname, beg_time))
