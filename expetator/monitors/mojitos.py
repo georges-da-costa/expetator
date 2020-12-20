@@ -40,7 +40,6 @@ class Mojitos:
         self.load = len(sensor_set & load_names) != 0    
         self.infiniband = len(sensor_set & infiniband_names) != 0    
         
-        self.net_dev = None
         self.executor = None
 
         self.names = sensor_set
@@ -71,15 +70,13 @@ class Mojitos:
                 executor.hosts("chmod a+rw /sys/class/powercap/intel-rapl/*/*", root=True)
                 executor.hosts("chmod a+rw /sys/class/powercap/intel-rapl/*/*/*", root=True)
 
-        if self.network:
-            self.net_dev = executor.get_network_if()
         self.executor = executor
 
         self.cmdline = '/tmp/mojitos/mojitos -t 0 -f %s' % self.frequency
         if self.perf:
             self.cmdline += ' -p ' + ','.join(self.names & perf_names)
         if self.network:
-            self.cmdline += ' -d %s' % self.net_dev
+            self.cmdline += ' -d X'
         if self.infiniband:
             self.cmdline += ' -i X'
         if self.rapl:
