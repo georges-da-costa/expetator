@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="expetator",
-    version="0.0.9",
+    version="0.1.0",
     author="Georges Da Costa",
     author_email="georges.da-costa@irit.fr",
     description="A framework for monitoring HPC applications using DVFS",
