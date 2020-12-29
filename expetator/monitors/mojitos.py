@@ -105,4 +105,4 @@ class Mojitos:
                                     (hostname, filename_moj, hostname, benchname, beg_time))
         else:
             self.executor.local('cp /dev/shm/monitoring %s/%s_%s_%s' %
-                                    (filename_moj, hostname, benchname, beg_time))
+                                    (filename_moj, 'localhost', benchname, beg_time))
