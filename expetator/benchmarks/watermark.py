@@ -18,8 +18,9 @@ class WaterMark:
 
     def run(self, bench, params, executor):
         'Runs the benchmark with watermark'
+        _, _, initial_bench = bench.split('-', maxsplit=2)
         executor.cores('/tmp/bin/watermark');
-        value, name = self.bench.run(bench, params, executor)
+        value, name = self.bench.run(initial_bench, params, executor)
         executor.cores('/tmp/bin/watermark');
 
         return value, 'wt-%d-%s' % (self.total_time, name)
