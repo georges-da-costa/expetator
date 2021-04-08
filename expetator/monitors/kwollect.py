@@ -54,7 +54,7 @@ class Power:
         values = {host:[] for host in host_list}
         for elements in raws:
             device_id = elements['device_id']
-            timestamps[device_id].append(int(datetime.datetime.strptime(elements['timestamp'], "%Y-%m-%dT%H:%M:%S%z").timestamp()))
+            timestamps[device_id].append(int(datetime.datetime.strptime(elements['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z").timestamp()))
             values[device_id].append(elements['value'])
         result = [(host, timestamps[host], values[host]) for host in host_list]
 
