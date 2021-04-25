@@ -1,0 +1,59 @@
+--- /tmp/builtin-stat.c	2021-04-21 14:21:15.022060847 +0200
++++ builtin-stat.c	2021-04-21 14:26:22.983556200 +0200
+@@ -474,7 +474,7 @@
+ 
+ 	perf_stat__reset_shadow_per_stat(&rt_stat);
+ 	runtime_stat_reset(&stat_config);
+-	read_counters(&rs);
++	read_counters(&ts);
+ 
+ 	if (STAT_RECORD) {
+ 		if (WRITE_STAT_ROUND_EVENT(rs.tv_sec * NSEC_PER_SEC + rs.tv_nsec, INTERVAL))
+@@ -483,7 +483,7 @@
+ 
+ 	init_stats(&walltime_nsecs_stats);
+ 	update_stats(&walltime_nsecs_stats, stat_config.interval * 1000000ULL);
+-	print_counters(&rs, 0, NULL);
++	print_counters(&ts, 0, NULL);
+ }
+ 
+ static bool handle_interval(unsigned int interval, int *times)
+@@ -628,6 +628,17 @@
+ 
+ 	time_to_sleep = sleep_time;
+ 
++	clock_gettime(CLOCK_MONOTONIC, &time_start);
++	if(interval > 1000) {
++	  time_start.tv_sec+=1;
++	  usleep(time_start.tv_nsec / 1000);
++	  time_start.tv_nsec=0;
++	} else {
++	  time_to_sleep -= (time_start.tv_nsec/1000000) % interval;
++	  time_start.tv_nsec -= time_start.tv_nsec % (1000000*interval);
++	}
++
++	
+ 	while (!done) {
+ 		if (forks)
+ 			child_exited = waitpid(child_pid, &status, WNOHANG);
+@@ -637,16 +648,17 @@
+ 		if (child_exited)
+ 			break;
+ 
+-		clock_gettime(CLOCK_MONOTONIC, &time_start);
+ 		if (!(evlist__poll(evsel_list, time_to_sleep) > 0)) { /* poll timeout or EINTR */
+ 			if (timeout || handle_interval(interval, times))
+ 				break;
+ 			time_to_sleep = sleep_time;
+ 		} else { /* fd revent */
+ 			process_evlist(evsel_list, interval);
+-			clock_gettime(CLOCK_MONOTONIC, &time_stop);
+-			compute_tts(&time_start, &time_stop, &time_to_sleep);
+ 		}
++		clock_gettime(CLOCK_MONOTONIC, &time_stop);
++		compute_tts(&time_start, &time_stop, &time_to_sleep);
++		time_start.tv_sec += interval / 1000;
++		time_start.tv_nsec += (interval % 1000)*1000000;
+ 	}
+ 
+ 	return status;
