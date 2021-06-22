@@ -30,7 +30,7 @@ class Lperf:
 
         self.executor = executor
 
-        self.cmdline = '/tmp/bin/lperf stat -x " " -I %s -a -A -e %s' % (self.interval, ' '.join(self.names))
+        self.cmdline = '/tmp/bin/lperf stat -x " " -I %s -a -A -e %s' % (self.interval, ','.join(self.names))
         self.cmdline += ' -o /dev/shm/lperf_monitoring &'
 
     def start(self):

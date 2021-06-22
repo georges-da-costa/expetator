@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="expetator",
-    version="0.1.7",
+    version="0.2.1",
     author="Georges Da Costa",
     author_email="georges.da-costa@irit.fr",
     description="A framework for monitoring HPC applications using DVFS",
@@ -19,6 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    package_data={'': ['benchmarks/genericbench/*', 'benchmarks/*tpr', 'benchmarks/*.c', 'benchmarks/*.tgz', 'benchmarks/*.cu', 'leverages/*.[ch]', 'leverages/*.sh', 'leverages/*_mak']},
+    package_data={'': ['benchmarks/genericbench/*', 'benchmarks/*tpr', 'benchmarks/*.c', 'benchmarks/*.tgz', 'benchmarks/*.cu',
+                       'monitors/*.bz2', 'monitors/*.diff',
+                       'leverages/*.[ch]', 'leverages/*.sh', 'leverages/*_mak']},
     include_package_data=True,
 )
