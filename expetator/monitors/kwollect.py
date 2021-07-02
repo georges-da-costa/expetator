@@ -9,13 +9,14 @@ def get_names():
 
 class Power:
     'Monitoring using Kwollect on g5k'
-    def __init__(self):
+    def __init__(self, metric = 'wattmetre_power_watt'):
         self.hostnames = None
         self.site = None
         self.start_time = None
         self.end_time = None
         self.executor = None
         self.names = get_names()
+        self.metric = metric
         
     def build(self, executor):
         """Prepare the right request only needed on g5k"""
@@ -37,7 +38,7 @@ class Power:
         os.makedirs(filename_power, exist_ok=True)
         target =  '%s/%s_%s_%s' % (filename_power, self.executor.hostnames[0], benchname, beg_time)
 
-        request = 'https://api.grid5000.fr/stable/sites/%s/metrics?metrics=wattmetre_power_watt&start_time=%s&end_time=%s&nodes=%s' % (self.site, self.start_time, self.end_time, self.hostnames)
+        request = 'https://api.grid5000.fr/stable/sites/%s/metrics?metrics=%s&start_time=%s&end_time=%s&nodes=%s' % (self.site, self.metric, self.start_time, self.end_time, self.hostnames)
 
         delta = int(time.time())-self.end_time
         if delta < 6:
