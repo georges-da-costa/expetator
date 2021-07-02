@@ -9,10 +9,14 @@ def signal_handler(signal_number, frame):
     os.close(fd)
 
 fd = os.open("/dev/cpu_dma_latency", os.O_RDWR)
-os.write(fd, b'\0\0\0\0')
+os.write(fd, b'\\0\\0\\0\\0')
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.pause()
+"""
+
+terminate_script = """#!/bin/bash
+ps aux | grep script_nodeepsleep.py | grep sudo | awk '{print $2}' | xargs sudo-g5k kill
 """
 
 class Nodeepsleep:
@@ -20,15 +24,20 @@ class Nodeepsleep:
     def __init__(self, modes = {True, False}):
         self.modes = modes
         self.binary = '/tmp/bin/script_nodeepsleep.py'
+        self.terminate = '/tmp/bin/terminate_nodeepsleep.py'
         self.cur_mode = False
         
     def build(self, executor):
         'Builds the software'
         self.executor = executor
         with open(self.binary, 'w') as out_file:
-            out_file.write(script)
+            out_file.write(source_script)
         os.chmod(self.binary, 0o777)
 
+        with open(self.terminate, 'w') as out_file:
+            out_file.write(terminate_script)
+        os.chmod(self.terminate, 0o777)
+        
     def available_states(self):
         'Returns all the modes'
         return self.modes
@@ -40,8 +49,9 @@ class Nodeepsleep:
             self.executor.hosts(self.binary+' &', root=True)
 
     def stop(self, output_file=None):
-        'Reverts to the maximum frequency'
-        self.executor.hosts('killall script_nodeepsleep.py', root=True)
+        'Stops the script'
+        if self.curr_mode:
+            self.executor.hosts(self.terminate, root=True)
         self.curr_mode = False
             
     def get_state(self):
