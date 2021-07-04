@@ -56,12 +56,12 @@ class Nodeepsleep:
             
     def get_state(self):
         'Returns the current state'
-        return (self.curr_mode)
+        return self.curr_mode
 
     def state_to_str(self):
-        'Returns the current min and max frequencies as a string'
+        'Returns the current state as a string'
         return '%s' % self.curr_mode
 
     def get_labels(self):
-        'Returns the label for frequenciess'
-        return 'C0only'
+        'Returns the label for the C0 state'
+        return ('C0only', )
