@@ -1,5 +1,6 @@
 import os
 import re
+import math
 
 def standard_parameters(nbproc):
     if nbproc < 16:
@@ -16,6 +17,38 @@ def standard_parameters(nbproc):
             'is':'E', 'ft':'E', 'lu':'D', 'mg':'D'}
     
 
+
+
+def test_lu(nb):
+	xdim = int(math.sqrt(nb))
+	ydim = nb // xdim
+	while(xdim*ydim != nb and 2*ydim >= xdim):
+		xdim += 1
+		ydim = nb // xdim
+	return xdim*ydim == nb and 2*ydim >= xdim
+
+def get_lu(nb):
+	val = max(nb, 1)
+	while(not test_lu(val)):
+		val -= 1
+	return val
+
+
+def get_square(nb):
+	tmp = int(math.sqrt(nb))
+	return tmp*tmp
+
+def get_power_of_2(i):
+	return 2**int(math.log2(i))
+    
+def npb_constraints(name, nbproc):
+    if name in ['cg', 'is']:
+        return get_power_of_2(nbproc)
+    if name in ['lu']:
+        return get_lu(nbproc)
+    return nbproc # for 'ep', 'bt', 'sp', 'ft', 'mg'
+    
+    
 class NpbBench:
     'Nas Parallel Benchmark'
     def __init__(self, names={'ep', 'bt', 'sp', 'cg', 'is', 'ft', 'lu', 'mg'},
@@ -42,13 +75,15 @@ class NpbBench:
         executor.local('cp /tmp/NPB3.4-MPI/bin/* /tmp/bin/')
 
         for key in self.params:
-            self.params[key] = [(self.params[key], nbproc)]
+            self.params[key] = [(self.params[key], npb_constraints(key, nbproc))]
         return self.params
 
     def run(self, bench, params, executor):
         """Runner for NPB benchmarks """
         classtype, nbproc = params
-        output = executor.cores('/tmp/bin/%s.%s.x' % (bench, classtype))
+        output = executor.mpi('/tmp/bin/%s.%s.x' % (bench, classtype),
+                              executor.mpi_core_file, nbproc)
+
         execution_time = float(re.search(' Time in seconds = *(.*)', output).group(1))
         benchname = bench+'-'+classtype+'-'+str(nbproc)
         return execution_time, benchname

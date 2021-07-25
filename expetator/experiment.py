@@ -30,7 +30,7 @@ class Executor:
                 self.hostnames = reduce(lambda l, x: l if x in l else l+[x], content, [])
                 self.nbcores = len(content)
             self.nbhosts = len(self.hostnames)
-            self.mpi_options = '--mca orte_rsh_agent oarsh'
+            self.mpi_options = '--map-by node --mca orte_rsh_agent oarsh'
             self.sudo = 'sudo-g5k'
             self.ssh = 'oarsh'
 
