@@ -210,3 +210,4 @@ def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, tim
                     expe.start_actions(actions)
                     pattern = expe.monitor_bench(bench, param)
                     expe.stop_actions(actions, pattern)
+    return expe.output_file
