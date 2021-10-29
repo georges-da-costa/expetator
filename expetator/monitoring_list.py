@@ -18,7 +18,7 @@ def read_run_list(prefix, hostname, startTime, basename, fullname, hostlist=None
     
         for host in hostlist.split(';'):
             name, _ = host.split('.', maxsplit=1)
-            df = pd.DataFrame(data[name]).transpose()
+            df = pd.DataFrame(list(data[name])).transpose()
             df.columns = ["#timestamp", prefix]
             result.append(df)
     except:
