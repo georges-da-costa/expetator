@@ -62,7 +62,8 @@ class NpbBench:
         
         'Builds NPB benchmark'
         executor.local('tar xfC %s/NPB3.4-MPI.tgz /tmp/' % basedir, shell=False)
-        executor.local('cp /tmp/NPB3.4-MPI/config/make.def.template /tmp/NPB3.4-MPI/config/make.def ')
+        executor.local('cp /tmp/NPB3.4-MPI/config/make.def.template /tmp/NPB3.4-MPI/config/make.def')
+        executor.local("sed -i 's/mpif90/mpif90 -fallow-argument-mismatch -fallow-invalid-boz/' /tmp/NPB3.4-MPI/config/make.def")
         nbproc = executor.nbcores
 
         if self.params is None:

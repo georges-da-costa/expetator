@@ -14,8 +14,17 @@ load_names = {'user', 'nice', 'system', 'idle', 'iowait', 'irq',
               'softirq', 'steal', 'guest', 'guest_nice'}
 perf_names = {'cpu_cycles', 'instructions', 'cache_references', 'cache_misses',
               'branch_instructions', 'branch_misses', 'bus_cycles', 'ref_cpu_cycles',
-              'cache_l1d', 'cache_ll', 'cache_dtlb', 'cache_itlb', 'cache_bpu',
-              'cache_node', 'cache_op_read', 'cache_op_prefetch', 'cache_result_access',
+              'cache_l1d_r_a', 'cache_l1d_r_m', 'cache_l1d_w_a', 'cache_l1d_w_m', 'cache_l1d_p_a', 'cache_l1d_p_m',
+              'cache_ll_r_a', 'cache_ll_r_m', 'cache_ll_w_a', 'cache_ll_w_m', 'cache_ll_p_a', 'cache_ll_p_m',
+              'cache_dtlb_r_a', 'cache_dtlb_r_m', 'cache_dtlb_w_a', 'cache_dtlb_w_m', 'cache_dtlb_p_a', 'cache_dtlb_p_m',
+              'cache_itlb_r_a', 'cache_itlb_r_m', 'cache_itlb_w_a', 'cache_itlb_w_m', 'cache_itlb_p_a', 'cache_itlb_p_m',
+              'cache_bpu_r_a', 'cache_bpu_r_m', 'cache_bpu_w_a', 'cache_bpu_w_m', 'cache_bpu_p_a', 'cache_bpu_p_m',
+              'cache_node_r_a', 'cache_node_r_m', 'cache_node_w_a', 'cache_node_w_m', 'cache_node_p_a', 'cache_node_p_m',
+              'cache_op_read_r_a', 'cache_op_read_r_m', 'cache_op_read_w_a', 'cache_op_read_w_m', 'cache_op_read_p_a', 'cache_op_read_p_m',
+              'cache_op_prefetch_r_a', 'cache_op_prefetch_r_m', 'cache_op_prefetch_w_a',
+              'cache_op_prefetch_w_m', 'cache_op_prefetch_p_a', 'cache_op_prefetch_p_m',
+              'cache_result_access_r_a', 'cache_result_access_r_m', 'cache_result_access_w_a',
+              'cache_result_access_w_m', 'cache_result_access_p_a', 'cache_result_access_p_m',
               'cpu_clock', 'task_clock', 'page_faults', 'context_switches',
               'cpu_migrations', 'page_faults_min', 'page_faults_maj',
               'alignment_faults', 'emulation_faults', 'dummy', 'bpf_output'}
@@ -58,7 +67,7 @@ class Mojitos:
                           '/usr/share/doc/libpowercap0']]:
                 executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
         if not os.path.exists('/tmp/mojitos'):
-            executor.local('cd /tmp; git clone https://git.renater.fr/anonscm/git/mojitos/mojitos.git')
+            executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
         else:
             executor.local('cd /tmp/mojitos; git pull')
         executor.local('cd /tmp/mojitos; make')
