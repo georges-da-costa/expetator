@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="expetator",
-    version="0.3.3",
+    version="0.3.7",
     author="Georges Da Costa",
     author_email="georges.da-costa@irit.fr",
     description="A framework for monitoring HPC applications using DVFS",
@@ -23,4 +23,6 @@ setuptools.setup(
                        'monitors/*.bz2', 'monitors/*.diff',
                        'leverages/*.[ch]', 'leverages/*.sh', 'leverages/*_mak']},
     include_package_data=True,
+    install_requires=['execo'],
+
 )

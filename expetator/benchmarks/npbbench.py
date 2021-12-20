@@ -61,19 +61,24 @@ class NpbBench:
         basedir = os.path.dirname(os.path.abspath(__file__))
         
         'Builds NPB benchmark'
-        executor.local('tar xfC %s/NPB3.4-MPI.tgz /tmp/' % basedir, shell=False)
-        executor.local('cp /tmp/NPB3.4-MPI/config/make.def.template /tmp/NPB3.4-MPI/config/make.def')
-        executor.local("sed -i 's/mpif90/mpif90 -fallow-argument-mismatch -fallow-invalid-boz/' /tmp/NPB3.4-MPI/config/make.def")
+
+        target_file = os.path.expanduser('~/.local/tmp/NPB3.4-MPI.tar.gz')
+        if not os.path.isfile(target_file):
+            os.makedirs(os.path.expanduser('~/.local/tmp/'), exist_ok=True)
+            executor.local('wget https://www.nas.nasa.gov/assets/npb/NPB3.4.tar.gz -O %s' % target_file)
+        executor.local('tar xfC %s /tmp/' % target_file, shell=False)
+        executor.local('cp /tmp/NPB3.4/NPB3.4-MPI/config/make.def.template /tmp/NPB3.4/NPB3.4-MPI/config/make.def')
+        executor.local("sed -i 's/mpif90/mpif90 -fallow-argument-mismatch -fallow-invalid-boz/' /tmp/NPB3.4/NPB3.4-MPI/config/make.def")
         nbproc = executor.nbcores
 
         if self.params is None:
             self.params = standard_parameters(nbproc)
 
         for bench in self.names:
-            executor.local('cd /tmp/NPB3.4-MPI/; make %s CLASS=%s'
+            executor.local('cd /tmp/NPB3.4/NPB3.4-MPI/; make %s CLASS=%s'
                            %(bench, self.params[bench]))
 
-        executor.local('cp /tmp/NPB3.4-MPI/bin/* /tmp/bin/')
+        executor.local('cp /tmp/NPB3.4/NPB3.4-MPI/bin/* /tmp/bin/')
 
         for key in self.params:
             self.params[key] = [(self.params[key], npb_constraints(key, nbproc))]
