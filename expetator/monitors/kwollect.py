@@ -25,8 +25,8 @@ class Power:
         self.start_time = None
         self.end_time = None
         self.executor = None
-        self.names = get_names()
-        self.metric = {'kwollect'}
+        self.names = {'kwollect'}
+        self.metric = metric
         
     def build(self, executor):
         """Prepare the right request only needed on g5k"""
