@@ -4,8 +4,18 @@ import requests
 import os
 import json
 
-def get_names():
-    return {'kwollect'}
+import platform 
+def get_g5k_target_metric():
+    cluster_name = platform.node().split('-')[0]
+
+    if cluster_name in ['grisou', 'graoully', 'grimoire',
+                        'grisou', 'gros', 'gruss', 'paravance']:
+        target_metric = 'pdu_outlet_power_watt'
+    elif cluster_name in ['troll', 'yeti', 'gemini', 'neowise',
+                          'orion', 'pyxis', 'sagittaire', 'taurus']:
+        target_metric = 'wattmetre_power_watt'
+    else:
+        target_metric = 'bmc_node_power_watt'
 
 class Power:
     'Monitoring using Kwollect on g5k'
@@ -16,7 +26,7 @@ class Power:
         self.end_time = None
         self.executor = None
         self.names = get_names()
-        self.metric = metric
+        self.metric = {'kwollect'}
         
     def build(self, executor):
         """Prepare the right request only needed on g5k"""
