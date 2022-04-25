@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="expetator",
-    version="0.3.10",
+    version="0.3.11",
     author="Georges Da Costa",
     author_email="georges.da-costa@irit.fr",
     description="A framework for monitoring HPC applications using DVFS",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/georges-da-costa/expetator",
+    url="https://gitlab.irit.fr/sepia-pub/expetator",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

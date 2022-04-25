@@ -10,12 +10,12 @@ def get_g5k_target_metric():
 
     if cluster_name in ['grisou', 'graoully', 'grimoire',
                         'grisou', 'gros', 'gruss', 'paravance']:
-        target_metric = 'pdu_outlet_power_watt'
-    elif cluster_name in ['troll', 'yeti', 'gemini', 'neowise',
+        return 'pdu_outlet_power_watt'
+    if cluster_name in ['troll', 'yeti', 'gemini', 'neowise',
                           'orion', 'pyxis', 'sagittaire', 'taurus']:
-        target_metric = 'wattmetre_power_watt'
-    else:
-        target_metric = 'bmc_node_power_watt'
+        return 'wattmetre_power_watt'
+
+    return 'bmc_node_power_watt'
 
 class Power:
     'Monitoring using Kwollect on g5k'
