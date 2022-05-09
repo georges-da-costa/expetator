@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+import sys
 
 def read_host_csv(prefix, hostname, startTime, basename, fullname, archive_fid=None):
     fullpath= '%s_%s/%s_%s_%s' % (basename, prefix, hostname, fullname, startTime)
@@ -39,3 +41,20 @@ def write_run_csv(prefix, hostname, startTime, basename, fullname, hostlist, dat
 def write_bundle_csv(prefix, bundle, data, target_directory):
     for index, row in bundle.iterrows():
         write_run_csv(prefix, row.hostname, row.startTime, row.basename, row.fullname, row.hostlist, data[index], target_directory) 
+
+def show_csv(filename, norm=False):
+    filename = sys.argv[-1]
+
+    a = pd.read_csv(filename, sep = " ")
+    a['#timestamp'] = a['#timestamp']-a['#timestamp'][0]
+    if norm:
+        tmp = (a/a.max())
+        tmp['#timestamp'] = a['#timestamp']
+        a = tmp
+    a.plot(x='#timestamp')
+    plt.show(block=True)
+
+def show_csv_main():
+    filename = sys.argv[-1]
+    norm = len(sys.argv) == 3
+    show_csv(filename, norm)

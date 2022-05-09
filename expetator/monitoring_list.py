@@ -1,6 +1,8 @@
 import os
+import sys
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 
 ## Power
 def read_run_list(prefix, hostname, startTime, basename, fullname, hostlist=None, archive_fid=None):
@@ -55,3 +57,20 @@ def write_bundle_list(prefix, bundle, data, target_directory):
     for index, row in bundle.iterrows():
         write_run_list(prefix, row.hostname, row.startTime, row.basename, row.fullname, row.hostlist, data[index], target_directory)
 
+
+def show_list(filename):
+    with open(filename) as f_id:
+        data = json.load(f_id)
+
+        for name, timestamps, power in data:
+            plt.plot([t-timestamps[0] for t in timestamps],
+                     power, label=name)
+        
+    plt.legend()
+    plt.show(block=True)
+
+
+
+def show_list_main():
+    filename = sys.argv[-1]
+    show_list(filename)
