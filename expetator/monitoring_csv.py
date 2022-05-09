@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 def read_host_csv(prefix, hostname, startTime, basename, fullname, archive_fid=None):
@@ -20,3 +21,21 @@ def read_bundle_csv(prefix, bundle, archive_fid=None):
                     for index, row in bundle.iterrows()]
     return csv_data
 
+
+
+
+def write_host_csv(prefix, hostname, startTime, basename, fullname, data, target_directory):
+    fullpath= '%s/%s_%s/%s_%s_%s' % (target_directory, basename, prefix, hostname, fullname, startTime)
+    os.makedirs('%s/%s_%s' % (target_directory, basename, prefix), exist_ok=True)
+
+    data.to_csv(fullpath,sep=' ', index=False)
+
+
+def write_run_csv(prefix, hostname, startTime, basename, fullname, hostlist, data, target_directory):
+    for index, host in enumerate(hostlist.split(';')):
+        write_host_csv(prefix, host, startTime, basename, fullname, data[index], target_directory)
+
+
+def write_bundle_csv(prefix, bundle, data, target_directory):
+    for index, row in bundle.iterrows():
+        write_run_csv(prefix, row.hostname, row.startTime, row.basename, row.fullname, row.hostlist, data[index], target_directory) 

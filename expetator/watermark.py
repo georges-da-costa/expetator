@@ -94,7 +94,12 @@ def remove_watermark_blocks(block, frequency=10, duration=30):
         ]
         for experiment in range(len(block))
     ]
-        
+
+
+def remove_wt_name(dataframe, target='fullname', signature='wt-30-'):
+    s_len = len(signature)
+    dataframe[target] = [elem[s_len:] for elem in dataframe[target]]
+
 ## Tool for virtualisation
 
 def demo_watermark_detection(focus, freq):

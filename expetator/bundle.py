@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+import os
 
 def init_bundle(bundlename):
     'Reads an experiment file'
@@ -14,6 +15,12 @@ def init_bundle(bundlename):
     
     experiments['basename'] = bundlename
     return experiments, zip_fid
+
+def save_bundle(bundle_name, bundle_data, target_directory):
+    os.makedirs(target_directory, exist_ok=True)
+    bundle_data.to_csv(target_directory+'/'+bundle_name,sep=' ', index=False)
+
+
 
 def merge_timeseries_blocks(references, additions, prefix = 'add_', key='#timestamp'):
     return [
