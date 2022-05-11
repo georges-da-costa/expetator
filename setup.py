@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="expetator",
-    version="0.3.12",
+    version="0.3.13",
     author="Georges Da Costa",
     author_email="georges.da-costa@irit.fr",
     description="A framework for monitoring HPC applications using DVFS",
@@ -31,6 +31,7 @@ setuptools.setup(
             'list_plot = expetator.monitoring_list:show_list_main',
             'add_energy = expetator.add_energy:main',
             'get_nb_freq = expetator.get_nb_freq:main',
+            'clean_csv = expetator.clean_csv:main',
         ]
     }
 
