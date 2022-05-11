@@ -51,9 +51,11 @@ def add_energy(basename, bundle_data=None, zip_fid=None):
 
     return(bundle_data)
 
-
-if __name__ == "__main__":
+def main():
     basename = sys.argv[1]
     bundle_data = add_energy(basename)
 
     bundle_data.to_csv(basename+".csv", sep=' ', index=False)
+
+if __name__ == "__main__":
+    main()
