@@ -29,6 +29,7 @@ setuptools.setup(
             'remove_watermark = expetator.remove_watermark:main',
             'csv_plot = expetator.monitoring_csv:show_csv_main',
             'list_plot = expetator.monitoring_list:show_list_main',
+            'add_energy = expetator.add_energy:main',
         ]
     }
 
