@@ -30,6 +30,7 @@ setuptools.setup(
             'csv_plot = expetator.monitoring_csv:show_csv_main',
             'list_plot = expetator.monitoring_list:show_list_main',
             'add_energy = expetator.add_energy:main',
+            'get_nb_freq = expetator.get_nb_freq:main',
         ]
     }
 
