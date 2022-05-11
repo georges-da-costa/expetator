@@ -17,7 +17,7 @@ def read_run_list(prefix, hostname, startTime, basename, fullname, hostlist=None
             raw_data = json.loads(file_id.read())
     
     data = {host:(timestamp, values) for (host, timestamp, values) in raw_data}
-    
+
     for host in hostlist.split(';'):
         name, _ = host.split('.', maxsplit=1)
         df = pd.DataFrame(list(data[name])).transpose()
@@ -44,6 +44,7 @@ def write_run_list(prefix, hostname, startTime, basename, fullname, hostlist, da
     res = []
 
     for index, host in enumerate(hosts):
+        host = host.split('.')[0]
         tmp = [host, list(data[index]['#timestamp']), list(data[index][prefix])]
         res.append(tmp)
 

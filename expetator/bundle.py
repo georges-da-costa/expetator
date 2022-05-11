@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
+import zipfile
 
 def init_bundle(bundlename):
     'Reads an experiment file'

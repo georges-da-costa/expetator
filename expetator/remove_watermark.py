@@ -21,6 +21,8 @@ def remove_watermark(target_file, target_dir):
         power_cleaned = None
 
     watermark.remove_wt_name(bundle_data)
+    if target_file.endswith('.zip'):
+        target_file = target_file[:-4]
     bundle.save_bundle(target_file, bundle_data, target_dir)
 
     if not moj_cleaned is None:
