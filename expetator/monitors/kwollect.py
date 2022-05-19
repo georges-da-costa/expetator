@@ -5,11 +5,12 @@ import os
 import json
 
 import platform 
-def get_g5k_target_metric():
-    cluster_name = platform.node().split('-')[0]
+def get_g5k_target_metric(cluster_name=None):
+    if cluster_name is None:
+        cluster_name = platform.node().split('-')[0]
 
     if cluster_name in ['grisou', 'graoully', 'grimoire',
-                        'grisou', 'gros', 'gruss', 'paravance']:
+                        'gros', 'gruss', 'paravance']:
         return 'pdu_outlet_power_watt'
     if cluster_name in ['troll', 'yeti', 'gemini', 'neowise',
                           'orion', 'pyxis', 'sagittaire', 'taurus']:

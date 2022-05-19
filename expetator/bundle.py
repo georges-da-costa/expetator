@@ -19,7 +19,7 @@ def init_bundle(bundlename):
 
 def save_bundle(bundle_name, bundle_data, target_directory):
     os.makedirs(target_directory, exist_ok=True)
-    bundle_data.to_csv(target_directory+'/'+bundle_name,sep=' ', index=False)
+    bundle_data.drop('basename', axis=1).to_csv(target_directory+'/'+bundle_name,sep=' ', index=False)
 
 
 
