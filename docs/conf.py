@@ -16,12 +16,12 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'a'
-copyright = '2022, a'
-author = 'a'
+project = 'Expetator'
+copyright = '2022, Georges Da Costa'
+author = 'Georges Da Costa'
 
 # The full version, including alpha/beta/rc tags
-release = 'a'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
