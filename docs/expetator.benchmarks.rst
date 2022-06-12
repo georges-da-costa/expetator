@@ -1,93 +1,25 @@
 expetator.benchmarks package
 ============================
 
-Submodules
-----------
+.. autoclass:: expetator.benchmarks.cpubench.CpuBench
 
-expetator.benchmarks.genericbench module
-----------------------------------------
+.. autoclass:: expetator.benchmarks.genericbench.GenericBench
 
-.. automodule:: expetator.benchmarks.genericbench
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.benchmarks.gpucpubench.GpuCpuBench
 
-expetator.benchmarks.gpucpubench module
----------------------------------------
+.. autoclass:: expetator.benchmarks.gpumembench.GpuMemBench
 
-.. automodule:: expetator.benchmarks.gpucpubench
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.benchmarks.gromacsbench.GromacsBench
 
-expetator.benchmarks.gpumembench module
----------------------------------------
+.. autoclass:: expetator.benchmarks.membench.MemBench
 
-.. automodule:: expetator.benchmarks.gpumembench
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.benchmarks.mpibench.MpiBench
 
-expetator.benchmarks.gromacsbench module
-----------------------------------------
+.. autoclass:: expetator.benchmarks.npbbench.NpbBench
 
-.. automodule:: expetator.benchmarks.gromacsbench
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.benchmarks.percentagebench.PercentageBench
 
-expetator.benchmarks.membench module
-------------------------------------
+.. autoclass:: expetator.benchmarks.sleepbench.SleepBench
 
-.. automodule:: expetator.benchmarks.membench
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.benchmarks.watermark.WaterMark
 
-expetator.benchmarks.mpibench module
-------------------------------------
-
-.. automodule:: expetator.benchmarks.mpibench
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.benchmarks.npbbench module
-------------------------------------
-
-.. automodule:: expetator.benchmarks.npbbench
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.benchmarks.percentagebench module
--------------------------------------------
-
-.. automodule:: expetator.benchmarks.percentagebench
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.benchmarks.sleepbench module
---------------------------------------
-
-.. automodule:: expetator.benchmarks.sleepbench
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.benchmarks.watermark module
--------------------------------------
-
-.. automodule:: expetator.benchmarks.watermark
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: expetator.benchmarks
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,77 +1,19 @@
 expetator.leverages package
 ===========================
 
-Submodules
-----------
+.. autoclass:: expetator.leverages.dvfs.Dvfs
 
-expetator.leverages.dvfs module
--------------------------------
+.. autoclass:: expetator.leverages.gpuclock.GpuClock
 
-.. automodule:: expetator.leverages.dvfs
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.leverages.gpupow.GpuPower
 
-expetator.leverages.gpuclock module
------------------------------------
+.. autoclass:: expetator.leverages.neosched.NeoSched
 
-.. automodule:: expetator.leverages.gpuclock
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.leverages.nodeepsleep.Nodeepsleep
 
-expetator.leverages.gpupow module
----------------------------------
+.. autoclass:: expetator.leverages.pct.Pct
 
-.. automodule:: expetator.leverages.gpupow
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: expetator.leverages.powercap.Powercap
 
-expetator.leverages.neosched module
------------------------------------
+.. autoclass:: expetator.leverages.template.Template
 
-.. automodule:: expetator.leverages.neosched
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.leverages.nodeepsleep module
---------------------------------------
-
-.. automodule:: expetator.leverages.nodeepsleep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.leverages.pct module
-------------------------------
-
-.. automodule:: expetator.leverages.pct
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.leverages.powercap module
------------------------------------
-
-.. automodule:: expetator.leverages.powercap
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.leverages.template module
------------------------------------
-
-.. automodule:: expetator.leverages.template
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: expetator.leverages
-   :members:
-   :undoc-members:
-   :show-inheritance:

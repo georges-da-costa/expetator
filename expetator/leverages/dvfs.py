@@ -21,7 +21,17 @@ def get_dvfs_values():
     return frequencies, pcts
 
 class Dvfs:
-    'Cpufreq based DVFS'
+    """Cpufreq based DVFS
+
+    Detects all available frequencies and go through all of them
+
+    :param dummy: Only uses min and max frequency
+    :type dummy: bool
+    :param baseline: Only uses max frequency
+    :type baseline: bool
+    :param frequencies: Limits to the provided list of frequencies
+    :type frequencies: int list
+    """
     def __init__(self, dummy=False, baseline=False, frequencies=None):
         self.basedir = os.path.dirname(os.path.abspath(__file__))
         self.dummy = dummy
@@ -30,7 +40,7 @@ class Dvfs:
         self.available_frequencies = frequencies
 
     def build(self, executor):
-        'Gather the available Frequenciess'
+        'Gather the available Frequencies'
         self.executor = executor
         self.executor.hosts(self.basedir+'/dvfs_pct.sh init')
         if self.available_frequencies is None:

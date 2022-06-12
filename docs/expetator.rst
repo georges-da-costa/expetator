@@ -11,16 +11,8 @@ Subpackages
    expetator.leverages
    expetator.monitors
 
-Submodules
-----------
-
-expetator.add\_energy module
-----------------------------
-
-.. automodule:: expetator.add_energy
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Main modules
+------------
 
 expetator.bundle module
 -----------------------
@@ -30,26 +22,10 @@ expetator.bundle module
    :undoc-members:
    :show-inheritance:
 
-expetator.clean\_csv module
----------------------------
-
-.. automodule:: expetator.clean_csv
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 expetator.experiment module
 ---------------------------
 
 .. automodule:: expetator.experiment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-expetator.get\_nb\_freq module
-------------------------------
-
-.. automodule:: expetator.get_nb_freq
    :members:
    :undoc-members:
    :show-inheritance:
@@ -94,10 +70,3 @@ expetator.watermark module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: expetator
-   :members:
-   :undoc-members:
-   :show-inheritance:
