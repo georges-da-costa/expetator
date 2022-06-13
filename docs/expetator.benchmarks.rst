@@ -28,7 +28,7 @@ Available benchmarks
 
 Example of use of an available benchmark :
 
-.. code-block:: C
+.. code-block:: python
 
     import expetator.experiment as experiment
     from expetator.benchmarks import SleepBench
