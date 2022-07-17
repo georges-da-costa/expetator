@@ -1,1 +1,3 @@
 myst_parser
+execo
+requests
