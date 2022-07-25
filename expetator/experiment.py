@@ -31,6 +31,8 @@ class Executor:
                 self.nbcores = len(content)
             self.nbhosts = len(self.hostnames)
             self.mpi_options = '--map-by node --mca orte_rsh_agent oarsh'
+            if self.hostnames.split('-')[0] in ['grvingt', 'grimani', 'grele', 'troll', 'yeti', 'dahu']:
+                self.mpi_options = '-mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
             self.sudo = 'sudo-g5k'
             self.ssh = 'oarsh'
 
