@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 # Tools for watermark detection
 def df_to_vector(df):
+    np.seterr(invalid='ignore')
     try:
         tmp = df.drop('#timestamp', axis=1)
     except:
@@ -74,7 +75,7 @@ def get_shift(dataframe, frequency=10, duration=30, backward=False):
         
             #print(delta, res)
 
-    if current < .6:
+    if np.isnan(current) or current < .6:
         res = pos_in_data, 0
     
     return res
