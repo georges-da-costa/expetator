@@ -3,14 +3,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
+
+def _read_csv(filename):
+    df = pd.read_csv(filename, sep=' ', skipinitialspace=True)
+    if df.columns[-1].startswith('Unnamed'):
+        df.drop(columns=df.columns[-1:], axis=1, inplace=True)
+    return df
+
+
+
 def read_host_csv(prefix, hostname, startTime, basename, fullname, archive_fid=None):
     fullpath= '%s_%s/%s_%s_%s' % (basename, prefix, hostname, fullname, startTime)
     if archive_fid is None:
         with open(fullpath) as file_id:
-            data = pd.read_csv(fullpath,sep=' ', skipinitialspace=True)
+            data = _read_csv(fullpath)
     else:
         with archive_fid.open(fullpath) as file_id:
-            data = pd.read_csv(file_id,sep=' ')
+            data = _read_csv(file_id)
     data = data.dropna(axis='columns')
     return data
 
@@ -45,7 +54,7 @@ def write_bundle_csv(prefix, bundle, data, target_directory):
 def show_csv(filename, norm=False):
     filename = sys.argv[-1]
 
-    a = pd.read_csv(filename, sep = " ")
+    a = _read_csv(filename)
     a['#timestamp'] = a['#timestamp']-a['#timestamp'][0]
     if norm:
         tmp = (a/a.max())

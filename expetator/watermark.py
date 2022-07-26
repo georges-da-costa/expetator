@@ -74,7 +74,7 @@ def get_shift(dataframe, frequency=10, duration=30, backward=False):
         
             #print(delta, res)
 
-    if current < .7:
+    if current < .6:
         res = pos_in_data, 0
     
     return res
@@ -102,7 +102,7 @@ def remove_wt_name(dataframe, target='fullname', signature='wt-30-'):
 
 ## Tool for virtualisation
 
-def demo_watermark_detection(focus, freq):
+def demo_watermark_detection(focus, freq=10):
     df = focus.loc[:, focus.columns != '#timestamp']
     norm_focus=(df-df.min())/(df.max()-df.min())
     norm_focus['#timestamp'] = focus['#timestamp']
