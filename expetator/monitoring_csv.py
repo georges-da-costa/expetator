@@ -15,9 +15,13 @@ def _read_csv(filename):
 def read_host_csv(prefix, hostname, startTime, basename, fullname, archive_fid=None):
     fullpath= '%s_%s/%s_%s_%s' % (basename, prefix, hostname, fullname, startTime)
     if archive_fid is None:
+        if not os.path.exists(fullpath):
+            fullpath = '%s_%s/%s_%s_%s' % (basename, prefix, 'localhost', fullname, startTime)
         with open(fullpath) as file_id:
             data = _read_csv(fullpath)
     else:
+        if not fullpath in archive_fid.namelist():
+            fullpath = '%s_%s/%s_%s_%s' % (basename, prefix, 'localhost', fullname, startTime)
         with archive_fid.open(fullpath) as file_id:
             data = _read_csv(file_id)
     data = data.dropna(axis='columns')
