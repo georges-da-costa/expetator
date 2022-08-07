@@ -31,4 +31,5 @@ class MpiBench:
         pcpu, pmem, pmpi, pbar = params
         delta = executor.cores('/tmp/bin/mpi_generic -c %s -m %s -n %s -b %s'
                                % (pcpu*3000, pmem, pmpi, pbar))
+        delta = delta.split()[-1]
         return delta.strip(), 'mpigeneric-%s-%s-%s-%s' % (pcpu, pmem, pmpi, pbar)
