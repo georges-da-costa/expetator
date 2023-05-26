@@ -8,6 +8,7 @@ import random
 import time
 import itertools
 from pathlib import Path
+import tempfile
 
 from functools import reduce
 from execo import Process
@@ -15,12 +16,13 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
+        self.tmp_dir
         if os.path.isdir('/dev/shm'):
-            self.mpi_host_file = '/dev/shm/mpi_host_file'
-            self.mpi_core_file = '/dev/shm/mpi_core_file'
+            self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm")
         else:
-            self.mpi_host_file = '/tmp/expetator_mpi_host_file'
-            self.mpi_core_file = '/tmp/expetator_mpi_core_file'
+            self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor")
+        self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
+        self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
         self.mpi_options = ''
         self.hostnames = ['localhost']
         self.nbhosts = 1

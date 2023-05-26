@@ -93,10 +93,7 @@ class Mojitos:
             self.cmdline += ' -r'
         if self.load:
             self.cmdline += ' -u'
-        if os.path.isdir('/dev/shm'):
-            self.monitoring_file = '/dev/shm/monitoring_moj'
-        else:
-            self.monitoring_file = '/tmp/expetator_monitoring_moj'
+        self.monitoring_file = '%s/monitoring_moj' executor.tmp_dir
         self.cmdline += ' -o %s &' % self.monitoring_file
 
 
