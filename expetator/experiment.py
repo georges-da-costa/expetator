@@ -15,8 +15,12 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
-        self.mpi_host_file = '/dev/shm/mpi_host_file'
-        self.mpi_core_file = '/dev/shm/mpi_core_file'
+        if os.path.isdir('/dev/shm'):
+            self.mpi_host_file = '/dev/shm/mpi_host_file'
+            self.mpi_core_file = '/dev/shm/mpi_core_file'
+        else:
+            self.mpi_host_file = '/tmp/expetator_mpi_host_file'
+            self.mpi_core_file = '/tmp/expetator_mpi_core_file'
         self.mpi_options = ''
         self.hostnames = ['localhost']
         self.nbhosts = 1

@@ -93,7 +93,11 @@ class Mojitos:
             self.cmdline += ' -r'
         if self.load:
             self.cmdline += ' -u'
-        self.cmdline += ' -o /dev/shm/monitoring_moj &'
+        if os.path.isdir('/dev/shm'):
+            self.monitoring_file = '/dev/shm/monitoring_moj'
+        else:
+            self.monitoring_file = '/tmp/expetator_monitoring_moj'
+        self.cmdline += ' -o %s &' % self.monitoring_file
 
 
     def start(self):
@@ -110,8 +114,8 @@ class Mojitos:
         os.makedirs(filename_moj, exist_ok=True)
         if len(self.executor.hostnames) > 1:
             for hostname in self.executor.hostnames:
-                self.executor.local('oarcp %s:/dev/shm/monitoring_moj %s/%s_%s_%s' %
-                                    (hostname, filename_moj, hostname, benchname, beg_time))
+                self.executor.local('oarcp %s:%s %s/%s_%s_%s' %
+                                    (hostname, self.monitoring_file, filename_moj, hostname, benchname, beg_time))
         else:
-            self.executor.local('cp /dev/shm/monitoring_moj %s/%s_%s_%s' %
-                                    (filename_moj, 'localhost', benchname, beg_time))
+            self.executor.local('cp %s %s/%s_%s_%s' %
+                                    (self.monitoring_file, filename_moj, 'localhost', benchname, beg_time))
