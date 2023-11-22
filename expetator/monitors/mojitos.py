@@ -58,21 +58,22 @@ class Mojitos:
     def build(self, executor):
         """Installs the mojito/s monitoring framework and add the permissions"""
 
-        if True or self.rapl:
+        #if True or self.rapl:
             # should work but do not work currently as to compile mojitos it
             # is always necessary to have rapl. Todo: update mojitos
-            if False in [os.path.exists(filename) for filename in
-                         ['/usr/share/doc/powercap-utils',
-                          '/usr/share/doc/libpowercap-dev',
-                          '/usr/share/doc/libpowercap0']]:
-                executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
+            # if False in [os.path.exists(filename) for filename in
+            #              ['/usr/share/doc/powercap-utils',
+            #               '/usr/share/doc/libpowercap-dev',
+            #               '/usr/share/doc/libpowercap0']]:
+            #     executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
         if not os.path.exists('/tmp/mojitos'):
             executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
         else:
             executor.local('cd /tmp/mojitos; git pull')
-        executor.local('cd /tmp/mojitos; make')
-        executor.local('cp /tmp/mojitos/mojitos /tmp/bin/')
-        if True or self.rapl:
+        executor.local('cd /tmp/mojitos; ./configure.sh; make')
+        executor.local('cp /tmp/mojitos/bin/mojitos /tmp/bin/')
+        if True or self.rapl or self.perf:
+            executor.hosts('sudo-g5k modprobe msr', root=True)
             if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
                 executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
             mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_max_power_uw')
