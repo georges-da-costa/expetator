@@ -16,11 +16,11 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
-        self.tmp_dir
+        self.tmp_dir = ''
         if os.path.isdir('/dev/shm'):
-            self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm")
+            self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm/")
         else:
-            self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor")
+            self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
         self.mpi_options = ''

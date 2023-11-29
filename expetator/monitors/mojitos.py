@@ -94,7 +94,7 @@ class Mojitos:
             self.cmdline += ' -r'
         if self.load:
             self.cmdline += ' -u'
-        self.monitoring_file = '%s/monitoring_moj' executor.tmp_dir
+        self.monitoring_file = '%s/monitoring_moj' % executor.tmp_dir
         self.cmdline += ' -o %s &' % self.monitoring_file
 
 
