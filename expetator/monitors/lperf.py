@@ -31,7 +31,7 @@ class Lperf:
         self.executor = executor
 
         self.cmdline = '/tmp/bin/lperf stat -x "!" -I %s -a -A -e %s' % (self.interval, ','.join(self.names))
-        self.cmdline += ' -o /dev/shm/lperf_monitoring &'
+        self.cmdline += ' -o %s/lperf_monitoring &' % executor.tmp_dir
 
     def start(self):
         'Starts the monitoring right before the benchmark'
@@ -47,8 +47,8 @@ class Lperf:
         os.makedirs(filename_moj, exist_ok=True)
         if len(self.executor.hostnames) > 1:
             for hostname in self.executor.hostnames:
-                self.executor.local('oarcp %s:/dev/shm/lperf_monitoring %s/%s_%s_%s' %
-                                    (hostname, filename_moj, hostname, benchname, beg_time))
+                self.executor.local('oarcp %s:%s/lperf_monitoring %s/%s_%s_%s' %
+                                    (hostname, self.executor.tmp_dir, filename_moj, hostname, benchname, beg_time))
         else:
-            self.executor.local('cp /dev/shm/lperf_monitoring %s/%s_%s_%s' %
-                                    (filename_moj, 'localhost', benchname, beg_time))
+            self.executor.local('cp %s/lperf_monitoring %s/%s_%s_%s' %
+                                    (self.executor.tmp_dir, filename_moj, 'localhost', benchname, beg_time))

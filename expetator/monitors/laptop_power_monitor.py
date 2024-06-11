@@ -18,7 +18,7 @@ if __name__ == '__main__':
     
     stay=True
 
-    with open('/dev/shm/power_measures','w') as power_file:
+    with open('/tmp/expetator_power_measures','w') as power_file:
         power_file.write('#timestamp power\n')
 
     try:
@@ -30,7 +30,7 @@ if __name__ == '__main__':
             current_time=time.time()
             int_current_time=int(current_time)
     
-            with open('/dev/shm/power_measures','a') as power_file:
+            with open('/tmp/expetator_power_measures','a') as power_file:
                 power_file.write(str(int_current_time)+' '+str(watt)+'\n')
             time.sleep(1-(current_time-int_current_time))
     except:

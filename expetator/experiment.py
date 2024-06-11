@@ -8,6 +8,7 @@ import random
 import time
 import itertools
 from pathlib import Path
+import tempfile
 
 from functools import reduce
 from execo import Process
@@ -15,8 +16,14 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
-        self.mpi_host_file = '/dev/shm/mpi_host_file'
-        self.mpi_core_file = '/dev/shm/mpi_core_file'
+        self.tmp_dir = ''
+        if os.path.isdir('/dev/shm'):
+            self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm/")
+        else:
+            self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
+
+        self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
+        self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
         self.mpi_options = ''
         self.hostnames = ['localhost']
         self.nbhosts = 1
@@ -43,6 +50,8 @@ class Executor:
         with open(self.mpi_core_file, 'w') as file_id:
             for host in self.hostnames:
                 file_id.write(host+" slots=%s\n" % (self.nbcores//self.nbhosts))
+
+        self.hosts(f'mkdir -p {self.tmp_dir}')
 
     def local(self, cmd, shell=True, root=False):
         """Executes the cmd command and returns stdout after cmd exits"""

@@ -57,8 +57,8 @@ class Power:
 
                 result = [(raw['uid'], raw['timestamps'],raw['values']) for raw in raws]
         else:
-            self.executor.local('cp /dev/shm/power_measures %s' % target)
-            with open('/dev/shm/power_measures') as file_id:
+            self.executor.local('cp /tmp/expetator_power_measures %s' % target)
+            with open('/tmp/expetator_power_measures') as file_id:
                 content = [line.split() for line in file_id.readlines()[1:]]
             content = [(int(t), float(p)) for t,p in content]
             result = [('localhost',)+tuple(zip(*content))]

@@ -184,8 +184,8 @@ int main(int argc, char** argv) {
 // -c 1200
 // -m 35000
 
-/* time mpirun --machinefile /dev/shm/m ./a.out -m 35000 -n 1 -c 1200
-/dev/shm/m : 32 == cores
+/* time mpirun --machinefile m ./a.out -m 35000 -n 1 -c 1200
+m : 32 == cores
 real	2m26.163s
 user	32m6.416s
 sys	5m27.728s
@@ -196,8 +196,8 @@ sys	5m27.728s
 
 /*
 
-/* time mpirun  --machinefile /dev/shm/m2 ./a.out -m 35000 -n 1 -c 1200
-/dev/shm/m2 : 64 == hyperthread
+/* time mpirun  --machinefile m2 ./a.out -m 35000 -n 1 -c 1200
+m2 : 64 == hyperthread
 real	3m38.990s
 user	101m59.836s
 sys	12m21.300s
@@ -209,12 +209,12 @@ sys	12m21.300s
 
 /* RQ: avec mpirun --mca btl ^openib
 
-time mpirun  --mca btl ^openib --machinefile /dev/shm/m ./a.out -n 1
+time mpirun  --mca btl ^openib --machinefile m ./a.out -n 1
 real	0m53.827s
 user	6m38.412s
 sys	6m46.088s
 
-time mpirun  --machinefile /dev/shm/m ./a.out -n 1
+time mpirun  --machinefile m ./a.out -n 1
 real	0m53.990s
 user	6m43.392s
 sys	6m53.344s
