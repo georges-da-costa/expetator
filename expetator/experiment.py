@@ -42,7 +42,6 @@ class Executor:
                 self.mpi_options = '-mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
             self.sudo = 'sudo-g5k'
             self.ssh = 'oarsh'
-        self.hosts(f'mkdir -p {self.tmp_dir}')
 
         with open(self.mpi_host_file, 'w') as file_id:
             for host in self.hostnames:
@@ -51,6 +50,8 @@ class Executor:
         with open(self.mpi_core_file, 'w') as file_id:
             for host in self.hostnames:
                 file_id.write(host+" slots=%s\n" % (self.nbcores//self.nbhosts))
+
+        self.hosts(f'mkdir -p {self.tmp_dir}')
 
     def local(self, cmd, shell=True, root=False):
         """Executes the cmd command and returns stdout after cmd exits"""
