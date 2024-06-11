@@ -21,6 +21,7 @@ class Executor:
             self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm/")
         else:
             self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
+
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
         self.mpi_options = ''
@@ -41,6 +42,7 @@ class Executor:
                 self.mpi_options = '-mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
             self.sudo = 'sudo-g5k'
             self.ssh = 'oarsh'
+        self.hosts(f'mkdir -p {self.tmp_dir}')
 
         with open(self.mpi_host_file, 'w') as file_id:
             for host in self.hostnames:
