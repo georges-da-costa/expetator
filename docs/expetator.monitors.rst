@@ -6,11 +6,12 @@ Available monitors
 
 .. autoclass:: expetator.monitors.kwollect.Power
 
-For Grid5000 you can select the most precise wattmeter using the following invocation
+For Grid5000 you can select the most precise wattmeter for you own cluster using the following invocation
 ```
 kwollect.Power(metric=kwollect.get_g5k_target_metric())
 ```
-Example of use of KWollect with results in /tmp/demo_power_XXX and power measures in /tmp/demo_power_XXX_power
+Example of use of KWollect, ie power monitoring of servers on grid5000.
+The result will be in a file **/tmp/power_demo_${HOST}_${TIMESTAMP_START}** and directories starting with **/tmp/power_demo_${HOST}_${TIMESTAMP_START}_power**
 
 .. code-block:: python
 
@@ -25,7 +26,7 @@ Example of use of KWollect with results in /tmp/demo_power_XXX and power measure
                ]
     BENCHMARKS = [SleepBench(default_time=10)]
     
-    experiment.run_experiment('/tmp/demo_power',
+    experiment.run_experiment('/tmp/power_demo',
                               benchmarks = BENCHMARKS,
                               monitors = MONITORS,
                              )
@@ -35,7 +36,8 @@ Example of use of KWollect with results in /tmp/demo_power_XXX and power measure
 
 .. autoclass:: expetator.monitors.mojitos.Mojitos
 
-Example of use of MojitO/S with RAPL, system load, and ethernet network. With results in /tmp/demo_moj_XXXX and MojitO/S in /tmp/demo_moj_XXXX_mojitos directory
+Example of use of MojitO/S with RAPL, system load, and ethernet network. 
+The result will be in a file **/tmp/mojitos_demo_${HOST}_${TIMESTAMP_START}** and directories starting with **/tmp/mojitos_demo_${HOST}_${TIMESTAMP_START}_mojitos**
 
 .. code-block:: python
 
@@ -50,7 +52,7 @@ Example of use of MojitO/S with RAPL, system load, and ethernet network. With re
                ]
     BENCHMARKS = [SleepBench(default_time=10)]
     
-    experiment.run_experiment('/tmp/demo_moj',
+    experiment.run_experiment('/tmp/mojitos_demo',
                               benchmarks = BENCHMARKS,
                               monitors = MONITORS,
                              )
