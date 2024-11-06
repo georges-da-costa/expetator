@@ -6,9 +6,53 @@ Available monitors
 
 .. autoclass:: expetator.monitors.kwollect.Power
 
+For Grid5000 you can select the most precise wattmeter using the following invocation
+```
+kwollect.Power(metric=kwollect.get_g5k_target_metric())
+```
+Example of use of KWollect with results in /tmp/demo_power_XXX and power measures in /tmp/demo_power_XXX_power
+
+```
+#! /usr/bin/python3
+
+from expetator.benchmarks import SleepBench
+from expetator.monitors import kwollect
+
+import expetator.experiment as experiment
+
+MONITORS = [ kwollect.Power(metric=kwollect.get_g5k_target_metric())
+           ]
+BENCHMARKS = [SleepBench(default_time=10)]
+    
+experiment.run_experiment('/tmp/demo_power',
+                          benchmarks = BENCHMARKS,
+                          monitors = MONITORS,
+                         )
+```
+
 .. autoclass:: expetator.monitors.lperf.Lperf
 
 .. autoclass:: expetator.monitors.mojitos.Mojitos
+
+Example of use of MojitO/S with RAPL, system load, and ethernet network. With results in /tmp/demo_moj_XXXX and MojitO/S in /tmp/demo_moj_XXXX_mojitos directory
+
+```
+#! /usr/bin/python3
+
+from expetator.benchmarks import SleepBench
+from expetator.monitors import mojitos
+
+import expetator.experiment as experiment
+
+MONITORS = [ mojitos.Mojitos(sensor_set = {'dram0', 'load', 'rxp'})
+           ]
+BENCHMARKS = [SleepBench(default_time=10)]
+    
+experiment.run_experiment('/tmp/demo_moj',
+                          benchmarks = BENCHMARKS,
+                          monitors = MONITORS,
+                         )
+```
 	       
 .. autoclass:: expetator.monitors.powergpu.Power
 
