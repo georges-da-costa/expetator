@@ -12,23 +12,24 @@ kwollect.Power(metric=kwollect.get_g5k_target_metric())
 ```
 Example of use of KWollect with results in /tmp/demo_power_XXX and power measures in /tmp/demo_power_XXX_power
 
-```
-#! /usr/bin/python3
+.. code-block:: python
 
-from expetator.benchmarks import SleepBench
-from expetator.monitors import kwollect
-
-import expetator.experiment as experiment
-
-MONITORS = [ kwollect.Power(metric=kwollect.get_g5k_target_metric())
-           ]
-BENCHMARKS = [SleepBench(default_time=10)]
+    #! /usr/bin/python3
     
-experiment.run_experiment('/tmp/demo_power',
-                          benchmarks = BENCHMARKS,
-                          monitors = MONITORS,
-                         )
-```
+    from expetator.benchmarks import SleepBench
+    from expetator.monitors import kwollect
+    
+    import expetator.experiment as experiment
+    
+    MONITORS = [ kwollect.Power(metric=kwollect.get_g5k_target_metric())
+               ]
+    BENCHMARKS = [SleepBench(default_time=10)]
+    
+    experiment.run_experiment('/tmp/demo_power',
+                              benchmarks = BENCHMARKS,
+                              monitors = MONITORS,
+                             )
+
 
 .. autoclass:: expetator.monitors.lperf.Lperf
 
@@ -36,23 +37,23 @@ experiment.run_experiment('/tmp/demo_power',
 
 Example of use of MojitO/S with RAPL, system load, and ethernet network. With results in /tmp/demo_moj_XXXX and MojitO/S in /tmp/demo_moj_XXXX_mojitos directory
 
-```
-#! /usr/bin/python3
+.. code-block:: python
 
-from expetator.benchmarks import SleepBench
-from expetator.monitors import mojitos
+    #! /usr/bin/python3
 
-import expetator.experiment as experiment
+    from expetator.benchmarks import SleepBench
+    from expetator.monitors import mojitos
 
-MONITORS = [ mojitos.Mojitos(sensor_set = {'dram0', 'load', 'rxp'})
-           ]
-BENCHMARKS = [SleepBench(default_time=10)]
+    import expetator.experiment as experiment
+
+    MONITORS = [ mojitos.Mojitos(sensor_set = {'dram0', 'load', 'rxp'})
+               ]
+    BENCHMARKS = [SleepBench(default_time=10)]
     
-experiment.run_experiment('/tmp/demo_moj',
-                          benchmarks = BENCHMARKS,
-                          monitors = MONITORS,
-                         )
-```
+    experiment.run_experiment('/tmp/demo_moj',
+                              benchmarks = BENCHMARKS,
+                              monitors = MONITORS,
+                             )
 	       
 .. autoclass:: expetator.monitors.powergpu.Power
 

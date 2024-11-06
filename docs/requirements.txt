@@ -1,3 +1,4 @@
 myst_parser
 execo
 requests
+sphinx-rtd-theme
