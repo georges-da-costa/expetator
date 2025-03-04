@@ -28,16 +28,18 @@ perf_names = {'cpu_cycles', 'instructions', 'cache_references', 'cache_misses',
               'cpu_clock', 'task_clock', 'page_faults', 'context_switches',
               'cpu_migrations', 'page_faults_min', 'page_faults_maj',
               'alignment_faults', 'emulation_faults', 'dummy', 'bpf_output'}
+gpu_names = {'gpu'}
 
 def get_names():
-    return network_names | rapl_names | load_names | perf_names | infiniband_names
+    return network_names | rapl_names | load_names | perf_names | infiniband_names | gpu_names
 
 def get_structured_names():
     return {'network':network_names,
             'rapl':rapl_names,
             'load':load_names,
             'perfct':perf_names,
-            'infiniband': infiniband_names}
+            'infiniband': infiniband_names,
+            'gpu': gpu_names}
 
 class Mojitos:
     'Monitoring using MojitO/S'
@@ -48,7 +50,8 @@ class Mojitos:
         self.rapl = len(sensor_set & rapl_names) != 0
         self.load = len(sensor_set & load_names) != 0    
         self.infiniband = len(sensor_set & infiniband_names) != 0    
-        
+        self.gpu = len(sensor_set & gpu_names) != 0
+
         self.executor = None
 
         self.names = sensor_set
@@ -94,6 +97,8 @@ class Mojitos:
             self.cmdline += ' -r'
         if self.load:
             self.cmdline += ' -u'
+        if self.gpu:
+            self.cmdline += ' -n'
         self.monitoring_file = '%s/monitoring_moj' % executor.tmp_dir
         self.cmdline += ' -o %s &' % self.monitoring_file
 
