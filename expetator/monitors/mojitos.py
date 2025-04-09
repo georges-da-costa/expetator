@@ -1,5 +1,6 @@
 import os
 import stat
+import shutil
 
 def read_int(filename):
     """Read integer from file filename"""
@@ -69,24 +70,28 @@ class Mojitos:
             #               '/usr/share/doc/libpowercap-dev',
             #               '/usr/share/doc/libpowercap0']]:
             #     executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
-        if not os.path.exists('/tmp/mojitos'):
-            executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
-        else:
-            executor.local('cd /tmp/mojitos; git pull')
-        executor.local('cd /tmp/mojitos; ./configure.sh; make')
-        executor.local('cp /tmp/mojitos/bin/mojitos /tmp/bin/')
-        if True or self.rapl or self.perf:
-            executor.hosts('sudo-g5k modprobe msr', root=True)
-            if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
-                executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
-            mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_max_power_uw')
-            if not mode.st_mode & stat.S_IWUSR:
-                executor.hosts("chmod a+rw /sys/class/powercap/intel-rapl/*/*", root=True)
-                executor.hosts("chmod a+rw /sys/class/powercap/intel-rapl/*/*/*", root=True)
 
+        binary = shutil.which('mojitos')
+        if binary is None:
+            if not os.path.exists('/tmp/mojitos'):
+                executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
+            else:
+                executor.local('cd /tmp/mojitos; git pull')
+            executor.local('cd /tmp/mojitos; ./configure.sh; make')
+            executor.local('cp /tmp/mojitos/bin/mojitos /tmp/bin/')
+            if self.rapl or self.perf:
+                executor.hosts('modprobe msr', root=True)
+                if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
+                    executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
+                mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_max_power_uw')
+                if not mode.st_mode & stat.S_IWUSR:
+                    executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*", root=True)
+                    executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*/*", root=True)
+            binary = '/tmp/bin/mojitos'
+        
         self.executor = executor
-
-        self.cmdline = '/tmp/bin/mojitos -t 0 -f %s' % self.frequency
+        
+        self.cmdline = f'{binary} -t 0 -f {self.frequency}'
         if self.perf:
             self.cmdline += ' -p ' + ','.join(self.names & perf_names)
         if self.network:
