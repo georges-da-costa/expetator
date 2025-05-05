@@ -35,11 +35,11 @@ class Lperf:
 
     def start(self):
         'Starts the monitoring right before the benchmark'
-        self.executor.hosts(self.cmdline)
+        self.proc = self.executor.hosts(self.cmdline, background=True)
 
     def stop(self):
         'Stops the monitoring right before the benchmark'
-        self.executor.hosts('killall lperf')
+        self.proc.kill()
 
     def save(self, experiment, benchname, beg_time):
         'Save the results when time is no more critical'

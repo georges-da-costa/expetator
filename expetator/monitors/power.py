@@ -30,14 +30,14 @@ class Power:
         if self.g5k:
             self.start_time = int(time.time())
         else:
-            self.executor.local(self.local_script)
+            self.proc = self.executor.local(self.local_script, background=True)
             
     def stop(self):
         'Stops the monitoring right after the benchmark'
         if self.g5k:
             self.end_time = int(time.time())
         else:
-            self.executor.local('killall laptop_power_monitor.py')
+            self.proc.kill()
 
     def save(self, experiment, benchname, beg_time):
         'Save the results when time is no more critical'

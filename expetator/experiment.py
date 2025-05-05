@@ -53,30 +53,42 @@ class Executor:
 
         self.hosts(f'mkdir -p {self.tmp_dir}')
 
-    def local(self, cmd, shell=True, root=False):
+    def local_start(self, cmd, shell=True, root=False):
         """Executes the cmd command and returns stdout after cmd exits"""
         if root:
             cmd = self.sudo+' '+cmd
         print('DEBUG:', cmd)
         proc = Process(cmd, shell=shell)
-        proc.run()
+        proc.start()
+        return proc
+    def wait_result(self, proc):
+        proc.wait()
         return proc.stdout
 
-    def mpi(self, cmd, host_file, nb_processes, root=False):
+    def local(self, cmd, shell=True, root=False, background=False):
+        proc = self.local_start(cmd, shell=shell, root=root)
+        print('DEBUG: local', background, root, shell, cmd)
+
+        if background:
+            return proc
+        else:
+            return self.wait_result(proc)
+    
+    def mpi(self, cmd, host_file, nb_processes, root=False, background=False):
         'Executes mpi cmd and returns stdout'
         if root:
             cmd = self.sudo+' '+cmd
         mpi_cmd = 'mpirun %s -np %s --machinefile %s %s' % \
                  (self.mpi_options, nb_processes, host_file, cmd)
-        return self.local(mpi_cmd)
+        return self.local(mpi_cmd, background=background)
 
-    def hosts(self, cmd, root=False):
+    def hosts(self, cmd, root=False, background=False):
         """Executes cmd on each host, returns rank=0 stdout"""
-        return self.mpi(cmd, self.mpi_host_file, self.nbhosts, root)
+        return self.mpi(cmd, self.mpi_host_file, self.nbhosts, root, background)
 
-    def cores(self, cmd):
+    def cores(self, cmd, root=False, background=False):
         """Executes cmd on each core, returns rank=0 stdout"""
-        return self.mpi(cmd, self.mpi_core_file, self.nbcores)
+        return self.mpi(cmd, self.mpi_core_file, self.nbcores, root, background)
 
     def sync(self, directory):
         'Synchronize one directory accross all nodes of the experiment'

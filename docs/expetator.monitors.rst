@@ -112,11 +112,11 @@ Here is an example of a simple benchmark in a file **demo_monitor.py**
     
         def start(self):
             'Starts the monitoring right before the benchmark'
-            self.executor.hosts(self.cmdline)
+            self.process = self.executor.hosts(self.cmdline, background=True)
 
         def stop(self):
             'Stops the monitoring right before the benchmark'
-            self.executor.hosts('killall monitor')
+            self.process.kill()
 
         def save(self, experiment, benchname, beg_time):
             'Save the results when time is no more critical'
