@@ -105,7 +105,7 @@ class Mojitos:
         if self.gpu:
             self.cmdline += ' -n'
         self.monitoring_file = '%s/monitoring_moj' % executor.tmp_dir
-        self.cmdline += ' -o %s &' % self.monitoring_file
+        self.cmdline += ' -o %s' % self.monitoring_file
 
 
     def start(self):
