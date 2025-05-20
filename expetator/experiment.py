@@ -24,7 +24,7 @@ class Executor:
 
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
-        self.mpi_options = ''
+        self.mpi_options = '--use-hwthread-cpus'
         self.hostnames = ['localhost']
         self.nbhosts = 1
         self.nbcores = os.cpu_count()
@@ -37,9 +37,9 @@ class Executor:
                 self.hostnames = reduce(lambda l, x: l if x in l else l+[x], content, [])
                 self.nbcores = len(content)
             self.nbhosts = len(self.hostnames)
-            self.mpi_options = '--map-by node --mca orte_rsh_agent oarsh'
+            self.mpi_options = '--map-by node --use-hwthread-cpus --mca orte_rsh_agent oarsh'
             if self.hostnames[0].split('-')[0] in ['grvingt', 'grimani', 'grele', 'troll', 'yeti', 'dahu', 'gros']:
-                self.mpi_options = '-mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
+                self.mpi_options = '--use-hwthread-cpus -mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
             self.sudo = 'sudo-g5k'
             self.ssh = 'oarsh'
 
