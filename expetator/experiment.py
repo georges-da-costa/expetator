@@ -65,7 +65,7 @@ class Executor:
 
     def remove_host(self):
         if self.nbhosts == 1:
-            return
+            return self.hostnames[0]
         res = self.hostnames.pop(0)
         self.init_mpi_files(self.hostnames)
         return res
