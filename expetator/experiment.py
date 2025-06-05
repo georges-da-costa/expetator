@@ -9,6 +9,7 @@ import time
 import itertools
 from pathlib import Path
 import tempfile
+import socket
 
 from functools import reduce
 from execo import Process
@@ -16,33 +17,42 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
-        self.tmp_dir = ''
+        self.init_mpi_file()
+        self.mpi_options = '--use-hwthread-cpus'
+        self.sudo = 'sudo'
+        self.ssh = 'ssh'
+        if 'OAR_NODE_FILE' in os.environ:
+            self.mpi_options = '--map-by node --use-hwthread-cpus --mca orte_rsh_agent oarsh'
+            if self.hostnames[0].split('-')[0] in ['grvingt', 'grimani', 'grele',
+                                                   'troll', 'yeti', 'dahu', 'gros']:
+                self.mpi_options = '--use-hwthread-cpus -mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
+            self.sudo = 'sudo-g5k'
+            self.ssh = 'oarsh'
+
+        self.hosts(f'mkdir -p {self.tmp_dir}')
+
+    def init_mpi_files(self, filelist = None):
+        'inits mpi_files nbhosts nbcores and hostnames'
         if os.path.isdir('/dev/shm'):
             self.tmp_dir = tempfile.mkdtemp(prefix="/dev/shm/")
         else:
             self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
-
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
-        self.mpi_options = '--use-hwthread-cpus'
-        self.hostnames = ['localhost']
-        self.nbhosts = 1
-        self.nbcores = os.cpu_count()
-        self.sudo = 'sudo'
-        self.ssh = 'ssh'
-        if 'OAR_NODE_FILE' in os.environ:
+        if not filelist is None:
+            self.hostnames = filelist
+            self.nbcores = os.cpu_count() * len(filelist)
+        elif 'OAR_NODE_FILE' in os.environ:
             with open(os.environ['OAR_NODE_FILE']) as filename:
                 content = [host.strip() for host in filename.readlines()]
                 # reduce is used to keep the file order
                 self.hostnames = reduce(lambda l, x: l if x in l else l+[x], content, [])
                 self.nbcores = len(content)
-            self.nbhosts = len(self.hostnames)
-            self.mpi_options = '--map-by node --use-hwthread-cpus --mca orte_rsh_agent oarsh'
-            if self.hostnames[0].split('-')[0] in ['grvingt', 'grimani', 'grele', 'troll', 'yeti', 'dahu', 'gros']:
-                self.mpi_options = '--use-hwthread-cpus -mca mtl psm2 -mca pml ^ucx,ofi -mca btl ^ofi,openib ' + self.mpi_options
-            self.sudo = 'sudo-g5k'
-            self.ssh = 'oarsh'
+        else:
+            self.hostnames = [socket.getfqdn()]
+            self.nbcores = os.cpu_count()
 
+        self.nbhosts = len(self.hostnames)
         with open(self.mpi_host_file, 'w') as file_id:
             for host in self.hostnames:
                 file_id.write(host+" slots=1\n")
@@ -50,9 +60,7 @@ class Executor:
         with open(self.mpi_core_file, 'w') as file_id:
             for host in self.hostnames:
                 file_id.write(host+" slots=%s\n" % (self.nbcores//self.nbhosts))
-
-        self.hosts(f'mkdir -p {self.tmp_dir}')
-
+        
     def local_start(self, cmd, shell=True, root=False):
         """Executes the cmd command and returns stdout after cmd exits"""
         if root:
