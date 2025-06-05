@@ -10,6 +10,7 @@ import itertools
 from pathlib import Path
 import tempfile
 import socket
+import psutil
 
 from functools import reduce
 from execo import Process
@@ -18,7 +19,7 @@ class Executor:
     'Allow access to the platform'
     def __init__(self):
         self.init_mpi_files()
-        self.mpi_options = '--use-hwthread-cpus'
+        self.mpi_options = ''
         self.sudo = 'sudo'
         self.ssh = 'ssh'
         if 'OAR_NODE_FILE' in os.environ:
@@ -39,9 +40,10 @@ class Executor:
             self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
+        nbcore = psutil.cpu_count(logical=False)
         if not filelist is None:
             self.hostnames = filelist
-            self.nbcores = os.cpu_count() * len(filelist)
+            self.nbcores = nbcore * len(filelist)
         elif 'OAR_NODE_FILE' in os.environ:
             with open(os.environ['OAR_NODE_FILE']) as filename:
                 content = [host.strip() for host in filename.readlines()]
@@ -50,7 +52,7 @@ class Executor:
                 self.nbcores = len(content)
         else:
             self.hostnames = [socket.getfqdn()]
-            self.nbcores = os.cpu_count()
+            self.nbcores = nbcore
 
         self.nbhosts = len(self.hostnames)
         with open(self.mpi_host_file, 'w') as file_id:
@@ -60,6 +62,13 @@ class Executor:
         with open(self.mpi_core_file, 'w') as file_id:
             for host in self.hostnames:
                 file_id.write(host+" slots=%s\n" % (self.nbcores//self.nbhosts))
+
+    def remove_host(self):
+        if self.nbhosts == 1:
+            return
+        res = self.hostnames.pop(0)
+        self.init_mpi_files(self.hostnames)
+        return res
         
     def local_start(self, cmd, shell=True, root=False):
         """Executes the cmd command and returns stdout after cmd exits"""

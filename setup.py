@@ -23,7 +23,7 @@ setuptools.setup(
                        'monitors/*.bz2', 'monitors/*.diff',
                        'leverages/*.[ch]', 'leverages/*.sh', 'leverages/*_mak']},
     include_package_data=True,
-    install_requires=['execo', 'requests'],
+    install_requires=['execo', 'requests', 'psutil'],
     entry_points={
         'console_scripts': [
             'remove_watermark = expetator.remove_watermark:main',
