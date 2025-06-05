@@ -17,7 +17,7 @@ from execo import Process
 class Executor:
     'Allow access to the platform'
     def __init__(self):
-        self.init_mpi_file()
+        self.init_mpi_files()
         self.mpi_options = '--use-hwthread-cpus'
         self.sudo = 'sudo'
         self.ssh = 'ssh'
