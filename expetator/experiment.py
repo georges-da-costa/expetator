@@ -34,7 +34,9 @@ class Executor:
 
     def init_mpi_files(self, filelist = None):
         'inits mpi_files nbhosts nbcores and hostnames'
-        self.tmp_dir = tempfile.mkdtemp(prefix="/tmp/executor/")
+        default_dir = '/tmp/executor'
+        os.makedirs(default_dir, exist_ok = True)
+        self.tmp_dir = tempfile.mkdtemp(prefix=default_dir)
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
         nbcore = psutil.cpu_count(logical=False)
