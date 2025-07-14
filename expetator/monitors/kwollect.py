@@ -5,17 +5,16 @@ import os
 import json
 
 import platform 
-def get_g5k_target_metric(cluster_name=None):
-    if cluster_name is None:
+def get_g5k_target_metric(cluster_name=None, site_name=None):
+    if cluster_name is None or site_name is None:
         cluster_name = platform.node().split('-')[0]
-
-    if cluster_name in ['grisou', 'graoully', 'grimoire',
-                        'gros', 'gruss', 'paravance']:
-        return 'pdu_outlet_power_watt'
-    if cluster_name in ['troll', 'yeti', 'gemini', 'neowise',
-                          'orion', 'pyxis', 'sagittaire', 'taurus']:
-        return 'wattmetre_power_watt'
-
+        site_name = platform.node().split('.')[1]
+    metrics_url = f"https://api.grid5000.fr/stable/sites/{site_name}/clusters/{cluster_name}"
+	metrics = requests.get(metrics_url).json()['metrics']
+    m_list = [m['name'] for m in metrics if m['name'].endswith('watt') and m['period'] != 0]
+    for ref_name in ['wattmetre_power_watt', 'pdu_outlet_power_watt', 'bmc_node_power_watt']:
+        if ref_name in m_list:
+            return ref_name
     return 'bmc_node_power_watt'
 
 class Power:
