@@ -10,7 +10,7 @@ def get_g5k_target_metric(cluster_name=None, site_name=None):
         cluster_name = platform.node().split('-')[0]
         site_name = platform.node().split('.')[1]
     metrics_url = f"https://api.grid5000.fr/stable/sites/{site_name}/clusters/{cluster_name}"
-	metrics = requests.get(metrics_url).json()['metrics']
+    metrics = requests.get(metrics_url).json()['metrics']
     m_list = [m['name'] for m in metrics if m['name'].endswith('watt') and m['period'] != 0]
     for ref_name in ['wattmetre_power_watt', 'pdu_outlet_power_watt', 'bmc_node_power_watt']:
         if ref_name in m_list:
