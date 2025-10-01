@@ -108,7 +108,7 @@ Here is an example of a simple benchmark in a file **demo_monitor.py**
         def build(self, executor):
             executor.local('gcc -o /tmp/bin/monitor %s' % self.c_code)
             self.executor = executor
-            self.cmdline = '/tmp/bin/monitor > /dev/shm/mon &'
+            self.cmdline = '/tmp/bin/monitor > /tmp/mon &'
     
         def start(self):
             'Starts the monitoring right before the benchmark'
@@ -124,10 +124,10 @@ Here is an example of a simple benchmark in a file **demo_monitor.py**
             os.makedirs(directory, exist_ok=True)
             if len(self.executor.hostnames) > 1:
                 for hostname in self.executor.hostnames:
-                    self.executor.local('oarcp %s:/dev/shm/mon %s/%s_%s_%s' %
+                    self.executor.local('oarcp %s:/tmp/mon %s/%s_%s_%s' %
                                         (hostname, directory, hostname, benchname, beg_time))
             else:
-                self.executor.local('cp /dev/shm/mon %s/%s_%s_%s' %
+                self.executor.local('cp /tmp/mon %s/%s_%s_%s' %
                                         (directory, 'localhost', benchname, beg_time))
 
     if __name__ == "__main__":

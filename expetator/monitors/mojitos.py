@@ -77,7 +77,10 @@ class Mojitos:
                 executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
             else:
                 executor.local('cd /tmp/mojitos; git pull')
-            executor.local('cd /tmp/mojitos; ./configure.sh; make')
+            if os.path.exists('/tmp/mojitos/configure.sh'):
+                executor.local('cd /tmp/mojitos; ./configure.sh; make')
+            else:
+                executor.local('cd /tmp/mojitos; ./configure; make')
             executor.local('cp /tmp/mojitos/bin/mojitos /tmp/bin/')
             if self.rapl or self.perf:
                 executor.hosts('modprobe msr', root=True)

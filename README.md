@@ -6,6 +6,8 @@ Documentation is available here: https://expetator.readthedocs.io/
 
 Source code is available here: https://gitlab.irit.fr/sepia-pub/expetator
 
+Issues are available here: https://github.com/georges-da-costa/expetator/issues
+
 To install expetator:
 
 	pip3 install expetator
