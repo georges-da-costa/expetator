@@ -52,9 +52,14 @@ def npb_constraints(name, nbproc):
 class NpbBench:
     'Nas Parallel Benchmark'
     def __init__(self, names={'ep', 'bt', 'sp', 'cg', 'is', 'ft', 'lu', 'mg'},
-                 options=None):
+                 options=None,
+                 repetitions = None):
         self.names = names
         self.params = options
+        if repetitions is None:
+            self.repet = {}
+        else:
+            self.repet = repetitions
 
     def build(self, executor):
 
@@ -81,15 +86,24 @@ class NpbBench:
         executor.local('cp /tmp/NPB3.4/NPB3.4-MPI/bin/* /tmp/bin/')
 
         for key in self.params:
-            self.params[key] = [(self.params[key], npb_constraints(key, nbproc))]
+            nbtimes = 1
+            if key in self.repet:
+                nbtimes = self.repet[key]
+            self.params[key] = [(self.params[key], npb_constraints(key, nbproc), nbtimes)]
         return self.params
 
     def run(self, bench, params, executor):
         """Runner for NPB benchmarks """
-        classtype, nbproc = params
-        output = executor.mpi('/tmp/bin/%s.%s.x' % (bench, classtype),
-                              executor.mpi_core_file, nbproc)
+        classtype, nbproc, nbtimes = params
+        execution_time = 0
+        for _ in range(nbtimes):
+            output = executor.mpi('/tmp/bin/%s.%s.x' % (bench, classtype),
+                                  executor.mpi_core_file, nbproc)
 
-        execution_time = float(re.search(' Time in seconds = *(.*)', output).group(1))
-        benchname = bench+'-'+classtype+'-'+str(nbproc)
+            execution_time += float(re.search(' Time in seconds = *(.*)', output).group(1))
+        if nbtimes == 1:
+            benchname = f'{bench}-{classtype}-{nbproc}'
+        else:
+            benchname = f'{bench}-{classtype}{nbtimes}-{nbproc}'
+
         return execution_time, benchname
