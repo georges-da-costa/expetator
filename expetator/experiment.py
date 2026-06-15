@@ -17,7 +17,8 @@ from execo import Process
 
 class Executor:
     'Allow access to the platform'
-    def __init__(self):
+    def __init__(self, hyperthread):
+        self.hyperthread = hyperthread
         self.init_mpi_files()
         self.mpi_options = ''
         self.sudo = 'sudo'
@@ -39,7 +40,7 @@ class Executor:
         self.tmp_dir = tempfile.mkdtemp(prefix=default_dir)
         self.mpi_host_file = '%s/mpi_host_file' % self.tmp_dir
         self.mpi_core_file = '%s/mpi_core_file' % self.tmp_dir
-        nbcore = psutil.cpu_count(logical=False)
+        nbcore = psutil.cpu_count(logical=self.hyperthread)
         if not filelist is None:
             self.hostnames = filelist
             self.nbcores = nbcore * len(filelist)
@@ -144,6 +145,7 @@ class Experiment:
         self.build_benchs()
 
         self.executor.sync('/tmp/bin')
+
         
     def build_benchs(self):
         'Builds all the benchmarks'
@@ -233,9 +235,9 @@ class Experiment:
                                    self.executor.hostnames[0],
                                    benchname, beg_time)
 
-def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, times=1):
+def run_experiment(name, benchmarks, leverages=[], monitors=[], sweep=False, times=1, hyperthread=False):
     """Typical experiment"""
-    executor = Executor()
+    executor = Executor(hyperthread)
 
     expe = Experiment(name, executor, benchmarks,
                       monitors=monitors, leverages=leverages)
