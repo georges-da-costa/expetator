@@ -21,6 +21,9 @@ class Executor:
         self.hyperthread = hyperthread
         self.init_mpi_files()
         self.mpi_options = ''
+        if self.hyperthread:
+            self.mpi_options = '--oversubscribe'
+
         self.sudo = 'sudo'
         self.ssh = 'ssh'
         if 'OAR_NODE_FILE' in os.environ:
@@ -49,7 +52,7 @@ class Executor:
                 content = [host.strip() for host in filename.readlines()]
                 # reduce is used to keep the file order
                 self.hostnames = reduce(lambda l, x: l if x in l else l+[x], content, [])
-                self.nbcores = len(content)
+                self.nbcores = nbcore * len(self.hostnames)
         else:
             self.hostnames = [socket.getfqdn()]
             self.nbcores = nbcore
