@@ -72,6 +72,7 @@ class Mojitos:
             #     executor.hosts('apt install -y libpowercap0 libpowercap-dev powercap-utils', root=True)
 
         binary = shutil.which('mojitos')
+
         if binary is None:
             if not os.path.exists('/tmp/mojitos'):
                 executor.local('cd /tmp; git clone https://gitlab.irit.fr/sepia-pub/mojitos.git')
@@ -82,15 +83,16 @@ class Mojitos:
             else:
                 executor.local('cd /tmp/mojitos; ./configure; make')
             executor.local('cp /tmp/mojitos/bin/mojitos /tmp/bin/')
-            if self.rapl or self.perf:
-                executor.hosts('modprobe msr', root=True)
-                if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
-                    executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
-                mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_max_power_uw')
-                if not mode.st_mode & stat.S_IWUSR:
-                    executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*", root=True)
-                    executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*/*", root=True)
             binary = '/tmp/bin/mojitos'
+            
+        if self.rapl or self.perf:
+            executor.hosts('modprobe msr', root=True)
+            if read_int('/proc/sys/kernel/perf_event_paranoid') != 0:
+                executor.hosts("sh -c 'echo 0 >/proc/sys/kernel/perf_event_paranoid'", root=True)
+            mode = os.stat('/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj')
+            if not mode.st_mode & stat.S_IRUSR:
+                executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*", root=True)
+                executor.hosts("chmod a+r /sys/class/powercap/intel-rapl/*/*/*", root=True)
         
         self.executor = executor
         
