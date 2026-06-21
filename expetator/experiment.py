@@ -28,7 +28,7 @@ class Executor:
         self.col = ''
         self.reset = ''
         if sys.stdout.isatty():
-            self.col = '\033[31m'
+            self.col = '\033[33m'
             self.reset = '\033[0m'
         self.sudo = 'sudo'
         self.ssh = 'ssh'
