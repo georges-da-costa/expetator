@@ -11,6 +11,7 @@ from pathlib import Path
 import tempfile
 import socket
 import psutil
+import sys
 
 from functools import reduce
 from execo import Process
@@ -24,6 +25,11 @@ class Executor:
         if self.hyperthread:
             self.mpi_options = '--oversubscribe'
 
+        self.col = ''
+        self.reset = ''
+        if sys.stdout.isatty():
+            self.col = '\033[31m'
+            self.reset = '\033[0m'
         self.sudo = 'sudo'
         self.ssh = 'ssh'
         if 'OAR_NODE_FILE' in os.environ:
@@ -77,7 +83,6 @@ class Executor:
         """Executes the cmd command and returns stdout after cmd exits"""
         if root:
             cmd = self.sudo+' '+cmd
-        print('DEBUG:', cmd)
         proc = Process(cmd, shell=shell)
         proc.start()
         return proc
@@ -87,7 +92,7 @@ class Executor:
 
     def local(self, cmd, shell=True, root=False, background=False):
         proc = self.local_start(cmd, shell=shell, root=root)
-        print('DEBUG: local', background, root, shell, cmd)
+        print(f'DEBUG: background:{background} root:{root} shell:{shell} cmd: {self.col}{cmd}{self.reset}')
 
         if background:
             return proc
